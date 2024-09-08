@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -9,8 +9,13 @@ import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageS
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const LarridinApp: React.FC = () => {
+  const [isClient, setIsClient] = useState(false)
   const [taskFilter, setTaskFilter] = useState('all')
   const [platformFilter, setPlatformFilter] = useState('all')
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
@@ -123,27 +128,29 @@ const LarridinApp: React.FC = () => {
                   <Clock className="w-3 h-3" />
                   {task.suggestedTime}
                 </Badge>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-none hover:from-purple-600 hover:to-blue-600">
-                      <Zap className="w-4 h-4 mr-2" />
-                      AI Suggestions
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="bg-gradient-to-br from-purple-100 to-blue-100 dark:from-gray-800 dark:to-gray-900 border-none">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-bold text-purple-700 dark:text-purple-300">{task.title}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      {getTaskSuggestions(task).map((suggestion, index) => (
-                        <div key={index} className="flex items-center space-x-2 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                          <span className="text-2xl">{suggestion.emoji}</span>
-                          <span className="text-gray-800 dark:text-gray-200">{suggestion.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                {isClient && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-none hover:from-purple-600 hover:to-blue-600">
+                        <Zap className="w-4 h-4 mr-2" />
+                        AI Suggestions
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-gradient-to-br from-purple-100 to-blue-100 dark:from-gray-800 dark:to-gray-900 border-none">
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl font-bold text-purple-700 dark:text-purple-300">{task.title}</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        {getTaskSuggestions(task).map((suggestion, index) => (
+                          <div key={index} className="flex items-center space-x-2 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                            <span className="text-2xl">{suggestion.emoji}</span>
+                            <span className="text-gray-800 dark:text-gray-200">{suggestion.text}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
             </CardContent>
           </Card>
