@@ -1,17 +1,19 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
 const LarridinApp: React.FC = () => {
-  const [isClient, setIsClient] = useState(false)
   const [activeTab, setActiveTab] = useState('dashboard')
   const [taskFilter, setTaskFilter] = useState('all')
   const [platformFilter, setPlatformFilter] = useState('all')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setIsClient(true)
+    setMounted(true)
   }, [])
 
   const tabs = [
@@ -121,7 +123,7 @@ const LarridinApp: React.FC = () => {
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
-            {isClient && (
+            {mounted && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-none hover:from-purple-600 hover:to-blue-600">
