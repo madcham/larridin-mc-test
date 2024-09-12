@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info } from "lucide-react"
+import React, { useState } from 'react'
+import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info, BarChart } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -10,11 +10,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
@@ -97,29 +92,27 @@ const LarridinApp: React.FC = () => {
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
-            {mounted && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700">
-                    <Zap className="w-4 h-4 mr-2" />
-                    AI Suggestions
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-gray-900 border-gray-800">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-purple-300">{task.title}</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    {getTaskSuggestions(task).map((suggestion, index) => (
-                      <div key={index} className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
-                        <span className="text-2xl">{suggestion.emoji}</span>
-                        <span className="text-gray-200">{suggestion.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700">
+                  <Zap className="w-4 h-4 mr-2" />
+                  AI Suggestions
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-gray-900 border-gray-800">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold text-purple-300">{task.title}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {getTaskSuggestions(task).map((suggestion, index) => (
+                    <div key={index} className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
+                      <span className="text-2xl">{suggestion.emoji}</span>
+                      <span className="text-gray-200">{suggestion.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       ))}
@@ -248,7 +241,16 @@ const LarridinApp: React.FC = () => {
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Calendar</h2>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <p className="text-lg text-gray-300">Calendar functionality coming soon!</p>
+        <div className="grid grid-cols-7 gap-2">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} className="text-center font-bold">{day}</div>
+          ))}
+          {Array.from({ length: 35 }, (_, i) => (
+            <div key={i} className="aspect-square bg-gray-700 rounded-lg flex items-center justify-center">
+              {i + 1}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -257,7 +259,14 @@ const LarridinApp: React.FC = () => {
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Analytics</h2>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <p className="text-lg text-gray-300">Analytics functionality coming soon!</p>
+        <h3 className="text-xl font-bold text-purple-300 mb-4">Task Completion Rate</h3>
+        <div className="flex items-center space-x-2">
+          <BarChart className="w-6 h-6 text-purple-300" />
+          <div className="flex-1 bg-gray-700 h-4 rounded-full overflow-hidden">
+            <div className="bg-purple-500 h-full" style={{ width: '75%' }}></div>
+          </div>
+          <span className="font-bold text-purple-300">75%</span>
+        </div>
       </div>
     </div>
   )
@@ -266,7 +275,14 @@ const LarridinApp: React.FC = () => {
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Guide</h2>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <p className="text-lg text-gray-300">User guide coming soon!</p>
+        <h3 className="text-xl font-bold text-purple-300 mb-4">Quick Start Guide</h3>
+        <ol className="list-decimal list-inside space-y-2 text-gray-300">
+          <li>View your dashboard for an overview of tasks and team performance.</li>
+          <li>Check the Tasks tab for a detailed list of your assignments.</li>
+          <li>Use the Calendar to plan your schedule and set reminders.</li>
+          <li>Monitor your progress in the Analytics section.</li>
+          <li>Refer to this Guide for help and best practices.</li>
+        </ol>
       </div>
     </div>
   )
