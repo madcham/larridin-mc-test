@@ -234,6 +234,43 @@ const LarridinApp: React.FC = () => {
     </div>
   )
 
+  const renderTasks = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Tasks</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <h3 className="text-xl font-bold text-purple-300 mb-4">All Tasks</h3>
+        {renderTaskList()}
+      </div>
+    </div>
+  )
+
+  const renderCalendar = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Calendar</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <p className="text-lg text-gray-300">Calendar functionality coming soon!</p>
+      </div>
+    </div>
+  )
+
+  const renderAnalytics = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Analytics</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <p className="text-lg text-gray-300">Analytics functionality coming soon!</p>
+      </div>
+    </div>
+  )
+
+  const renderGuide = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Guide</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <p className="text-lg text-gray-300">User guide coming soon!</p>
+      </div>
+    </div>
+  )
+
   const SidebarContent = () => (
     <>
       <div className="flex items-center gap-2 mb-8">
@@ -357,6 +394,10 @@ const LarridinApp: React.FC = () => {
       </div>
       <main className="flex-1 p-4 md:p-8 overflow-auto">
         {activeTab === 'dashboard' && renderDashboard()}
+        {activeTab === 'tasks' && renderTasks()}
+        {activeTab === 'calendar' && renderCalendar()}
+        {activeTab === 'analytics' && renderAnalytics()}
+        {activeTab === 'guide' && renderGuide()}
       </main>
     </div>
   )
