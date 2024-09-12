@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap } from "lucide-react"
+import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { Button } from "./ui/button"
+import { Progress } from "./ui/progress"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -45,6 +47,15 @@ const LarridinApp: React.FC = () => {
     { id: 'slack', label: 'Slack' },
     { id: 'gmail', label: 'Gmail' },
   ]
+
+  const teamMembers = [
+    { id: 1, name: 'Alice Johnson', capacity: 75 },
+    { id: 2, name: 'Bob Smith', capacity: 90 },
+    { id: 3, name: 'Charlie Brown', capacity: 60 },
+    { id: 4, name: 'Diana Prince', capacity: 85 },
+  ]
+
+  const delegationEffectiveness = 78 // This would be calculated based on actual data
 
   const getSourceColor = (source: string) => {
     switch (source) {
@@ -107,11 +118,11 @@ const LarridinApp: React.FC = () => {
         if (platformFilter === 'all') return true
         return task.source === platformFilter
       }).map(task => (
-        <div key={task.id} className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border-none shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg p-4">
-          <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-2">{task.title}</h3>
+        <div key={task.id} className="bg-gray-800 border-none shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg p-4">
+          <h3 className="text-lg font-bold text-purple-300 mb-2">{task.title}</h3>
           <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
-            <span className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100 px-2 py-1 rounded-full text-sm">Priority: {task.priority}</span>
-            <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-2 py-1 rounded-full text-sm">Deadline: {task.deadline}</span>
+            <span className="bg-yellow-900 text-yellow-100 px-2 py-1 rounded-full text-sm">Priority: {task.priority}</span>
+            <span className="bg-green-900 text-green-100 px-2 py-1 rounded-full text-sm">Deadline: {task.deadline}</span>
           </div>
           <div className="flex flex-wrap space-x-2 mb-2">
             <span className={`${getSourceColor(task.source)} text-xs font-semibold px-2 py-1 rounded-full`}>{task.source}</span>
@@ -119,7 +130,7 @@ const LarridinApp: React.FC = () => {
             {task.linkedToGoals && <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">Goal</span>}
           </div>
           <div className="flex flex-wrap justify-between items-center gap-2">
-            <span className="flex items-center gap-1 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100 px-2 py-1 rounded-full text-sm">
+            <span className="flex items-center gap-1 bg-purple-900 text-purple-100 px-2 py-1 rounded-full text-sm">
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
@@ -131,15 +142,15 @@ const LarridinApp: React.FC = () => {
                     AI Suggestions
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-gradient-to-br from-purple-100 to-blue-100 dark:from-gray-800 dark:to-gray-900 border-none">
+                <DialogContent className="bg-gray-900 border-none">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-purple-700 dark:text-purple-300">{task.title}</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold text-purple-300">{task.title}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     {getTaskSuggestions(task).map((suggestion, index) => (
-                      <div key={index} className="flex items-center space-x-2 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                      <div key={index} className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg shadow-md">
                         <span className="text-2xl">{suggestion.emoji}</span>
-                        <span className="text-gray-800 dark:text-gray-200">{suggestion.text}</span>
+                        <span className="text-gray-200">{suggestion.text}</span>
                       </div>
                     ))}
                   </div>
@@ -152,29 +163,123 @@ const LarridinApp: React.FC = () => {
     </div>
   )
 
+  const renderTeamCapacity = () => (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
+      <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
+        Team Capacity
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-sm">Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </h3>
+      <div className="space-y-4">
+        {teamMembers.map(member => (
+          <div key={member.id} className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-300">{member.name}</span>
+            <div className="flex items-center gap-2 w-2/3">
+              <Progress value={member.capacity} className="w-full" />
+              <span className="text-sm font-medium text-gray-300">{member.capacity}%</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  const renderDelegationEffectiveness = () => (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
+      <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
+        Delegation Effectiveness
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-sm">Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </h3>
+      <div className="flex items-center justify-center">
+        <div className="relative w-32 h-32">
+          <svg className="w-full h-full" viewBox="0 0 36 36">
+            <path
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#4B5563"
+              strokeWidth="3"
+            />
+            <path
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#8B5CF6"
+              strokeWidth="3"
+              strokeDasharray={`${delegationEffectiveness}, 100`}
+            />
+          </svg>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-purple-300">
+            {delegationEffectiveness}%
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   const renderDashboard = () => (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-purple-700 dark:text-purple-300">Welcome back, Alex! 👋</h2>
-      <div className="bg-gradient-to-br from-purple-400 to-blue-500 text-white border-none shadow-lg rounded-lg p-4">
+      <h2 className="text-3xl font-bold text-purple-300">Welcome back, Alex! 👋</h2>
+      <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white shadow-lg rounded-lg p-4">
         <h3 className="flex items-center gap-2 text-2xl font-bold mb-2">
           <MessageSquare className="w-6 h-6" />
           AI Assistant
         </h3>
         <p className="text-lg">I've analyzed your workload across all platforms. Here's your optimized task list for today:</p>
       </div>
-      {renderTaskList()}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          {renderTeamCapacity()}
+          {renderDelegationEffectiveness()}
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
+            Today's Tasks
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">Tasks are prioritized based on deadlines, importance, and your work patterns.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </h3>
+          {renderTaskList()}
+        </div>
+      </div>
     </div>
   )
 
   const renderTasks = () => (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-purple-700 dark:text-purple-300">Task Manager 📋</h2>
+      <h2 className="text-3xl font-bold text-purple-300">Task Manager 📋</h2>
       <div className="flex space-x-2 mb-4 pb-2 overflow-x-auto">
         {taskFilters.map(filter => (
           <button
             key={filter.id}
             onClick={() => setTaskFilter(filter.id)}
-            className={`${taskFilter === filter.id ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' : 'bg-white dark:bg-gray-800'} rounded-full px-6 py-2 text-sm font-medium transition-all duration-200 hover:shadow-lg whitespace-nowrap`}
+            className={`${taskFilter === filter.id ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' : 'bg-gray-800'} rounded-full px-6 py-2 text-sm font-medium transition-all duration-200 hover:shadow-lg whitespace-nowrap`}
           >
             {filter.label}
           </button>
@@ -185,7 +290,7 @@ const LarridinApp: React.FC = () => {
           <button
             key={filter.id}
             onClick={() => setPlatformFilter(filter.id)}
-            className={`${platformFilter === filter.id ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' : 'bg-white dark:bg-gray-800'} rounded-full px-6 py-2 text-sm font-medium transition-all duration-200 hover:shadow-lg whitespace-nowrap`}
+            className={`${platformFilter === filter.id ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' : 'bg-gray-800'} rounded-full px-6 py-2 text-sm font-medium transition-all duration-200 hover:shadow-lg whitespace-nowrap`}
           >
             {filter.label}
           </button>
@@ -197,16 +302,16 @@ const LarridinApp: React.FC = () => {
 
   const renderCalendar = () => (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-purple-700 dark:text-purple-300">Smart Calendar 📅</h2>
-      <div className="bg-gradient-to-br from-purple-400 to-blue-500 text-white border-none shadow-lg rounded-lg p-4">
+      <h2 className="text-3xl font-bold text-purple-300">Smart Calendar 📅</h2>
+      <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white shadow-lg rounded-lg p-4">
         <h3 className="flex items-center gap-2 text-2xl font-bold mb-2">
           <Settings className="w-6 h-6" />
           AI Calendar Optimization
         </h3>
         <p className="text-lg">I've identified optimal time slots for your tasks based on your work patterns and priorities.</p>
       </div>
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
-        <h3 className="text-2xl font-bold text-purple-700 dark:text-purple-300 mb-4">Today's Optimized Schedule</h3>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <h3 className="text-2xl font-bold text-purple-300 mb-4">Today's Optimized Schedule</h3>
         <div className="space-y-4">
           {[
             { time: '9:00 AM - 9:30 AM', task: 'Respond to team query', color: 'bg-green-500 text-white' },
@@ -215,8 +320,8 @@ const LarridinApp: React.FC = () => {
             { time: '2:00 PM - 2:15 PM', task: 'Share project update', color: 'bg-yellow-500 text-white' },
             { time: '3:30 PM - 3:45 PM', task: 'Update sales pipeline', color: 'bg-red-500 text-white' },
           ].map((item, index) => (
-            <div key={index} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
-              <span className="font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-0">{item.time}</span>
+            <div key={index} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-700 p-3 rounded-lg">
+              <span className="font-medium text-gray-200 mb-2 sm:mb-0">{item.time}</span>
               <span className={`${item.color} text-sm font-semibold px-3 py-1 rounded-full`}>{item.task}</span>
             </div>
           ))}
@@ -227,30 +332,56 @@ const LarridinApp: React.FC = () => {
 
   const renderAnalytics = () => (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-purple-700 dark:text-purple-300">Analytics</h2>
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
-        <p className="text-lg text-gray-600 dark:text-gray-300">This is a placeholder for the Analytics content.</p>
+      <h2 className="text-3xl font-bold text-purple-300">Analytics</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-6">
+        <p className="text-lg text-gray-300">This is a placeholder for the Analytics content.</p>
       </div>
     </div>
   )
 
   const renderGuide = () => (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-purple-700 dark:text-purple-300">User Guide</h2>
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 space-y-4">
-        <h3 className="text-xl font-semibold text-purple-600 dark:text-purple-300">Welcome to Larridin!</h3>
-        <p className="text-gray-600 dark:text-gray-300">
+      <h2 className="text-3xl font-bold text-purple-300">User Guide</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-6 space-y-4">
+        <h3 className="text-xl font-semibold text-purple-300">Welcome to Larridin!</h3>
+        <p className="text-gray-300">
           Larridin is your AI-powered personal assistant, designed to help you manage tasks, optimize your schedule, and boost your productivity across various platforms.
         </p>
-        <h4 className="text-lg font-semibold text-purple-500 dark:text-purple-400">Key Features:</h4>
-        <ul className="list-disc pl-5 space-y-2 text-gray-600 dark:text-gray-300">
+        <h4 className="text-lg font-semibold text-purple-400">Key Features:</h4>
+        <ul className="list-disc pl-5 space-y-2 text-gray-300">
           <li><strong>Smart Task Management:</strong> Organize and prioritize tasks from different platforms in one place.</li>
           <li><strong>AI-Powered Suggestions:</strong> Get intelligent recommendations for tackling your tasks efficiently.</li>
           <li><strong>Calendar Optimization:</strong> Let AI help you schedule your day for maximum productivity.</li>
           <li><strong>Cross-Platform Integration:</strong> Seamlessly manage tasks from Salesforce, Slack, Gmail, and more.</li>
           <li><strong>Productivity Analytics:</strong> Gain insights into your work patterns and improve your efficiency.</li>
         </ul>
-        <p className="text-gray-600 dark:text-gray-300">
+        <h4 className="text-lg font-semibold text-purple-400 mt-4">Understanding Team Capacity:</h4>
+        <p className="text-gray-300">
+          Team capacity is a measure of how much work your team can handle at any given time. It's calculated based on several factors:
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-300">
+          <li><strong>Assigned Tasks:</strong> The number and complexity of tasks currently assigned to each team member.</li>
+          <li><strong>Working Hours:</strong> The available working hours of each team member, accounting for time off and part-time schedules.</li>
+          <li><strong>Individual Productivity:</strong> Historical data on each team member's work speed and efficiency.</li>
+          <li><strong>Skill Match:</strong> How well the assigned tasks match each team member's skills and expertise.</li>
+        </ul>
+        <p className="text-gray-300">
+          The capacity percentage you see for each team member represents their current workload relative to their maximum capacity. This helps you make informed decisions about task delegation and workload management.
+        </p>
+        <h4 className="text-lg font-semibold text-purple-400 mt-4">Delegation Effectiveness:</h4>
+        <p className="text-gray-300">
+          Delegation effectiveness is a measure of how well tasks are being distributed and completed within your team. It's calculated based on:
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-300">
+          <li><strong>Task Completion Rates:</strong> The percentage of delegated tasks completed on time.</li>
+          <li><strong>Team Feedback:</strong> Satisfaction scores from team members about the tasks they've been assigned.</li>
+          <li><strong>Productivity Improvements:</strong> Measurable increases in team output following task delegation.</li>
+          <li><strong>Skill Development:</strong> How well delegation is contributing to team members' skill growth.</li>
+        </ul>
+        <p className="text-gray-300">
+          The delegation effectiveness score helps you gauge how well you're utilizing your team's skills and capacity. A higher score indicates that tasks are being appropriately assigned, leading to better team performance and satisfaction.
+        </p>
+        <p className="text-gray-300 mt-4">
           Explore the different tabs to discover how Larridin can revolutionize your workday. If you have any questions, don't hesitate to ask your AI assistant!
         </p>
       </div>
@@ -348,10 +479,10 @@ const LarridinApp: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-3 justify-start py-3 px-4 text-left hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 ${activeTab === tab.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+            className={`flex items-center gap-3 justify-start py-3 px-4 text-left hover:bg-gray-700 rounded-lg transition-colors duration-200 ${activeTab === tab.id ? 'bg-gray-700' : ''}`}
           >
             {tab.icon}
-            <span className="text-sm font-medium">{tab.label}</span>
+            <span className="text-sm font-medium text-gray-200">{tab.label}</span>
           </button>
         ))}
       </div>
@@ -359,20 +490,20 @@ const LarridinApp: React.FC = () => {
   )
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-purple-100 to-blue-100 dark:from-gray-900 dark:to-gray-800">
-      <aside className="hidden md:block w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
+    <div className="flex h-screen bg-gray-900 text-white">
+      <aside className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 p-4">
         <SidebarContent />
       </aside>
       <div className="md:hidden">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="fixed top-4 left-4 z-20 bg-white dark:bg-gray-800 p-2 rounded-md shadow-md"
+          className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
         >
           <Menu className="h-6 w-6" />
         </button>
         {isSidebarOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={() => setIsSidebarOpen(false)}>
-            <div className="absolute left-0 top-0 bottom-0 w-64 bg-white dark:bg-gray-800 p-4" onClick={e => e.stopPropagation()}>
+            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4" onClick={e => e.stopPropagation()}>
               <SidebarContent />
             </div>
           </div>
