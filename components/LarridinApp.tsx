@@ -373,7 +373,7 @@ const LarridinApp: React.FC = () => {
         </svg>
         <h1 className="text-2xl font-bold text-purple-300">Larridin</h1>
       </div>
-      <div className="flex flex-col items-stretch h-full space-y-2">
+      <nav className="flex flex-col items-stretch h-full space-y-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -384,7 +384,7 @@ const LarridinApp: React.FC = () => {
             <span className="text-sm font-medium text-gray-200">{tab.label}</span>
           </button>
         ))}
-      </div>
+      </nav>
     </>
   )
 
