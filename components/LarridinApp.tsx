@@ -2,15 +2,13 @@
 
 import React, { useState, useEffect } from 'react'
 import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
-import { Button } from "./ui/button"
-import { Progress } from "./ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
-  const [taskFilter, setTaskFilter] = useState('all')
-  const [platformFilter, setPlatformFilter] = useState('all')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 

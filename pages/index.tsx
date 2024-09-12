@@ -1,14 +1,10 @@
 import React from 'react'
-import dynamic from 'next/dynamic'
+import LarridinApp from '../components/LarridinApp'
 
-const LarridinApp = dynamic(() => import('@/components/LarridinApp'), { ssr: false })
-
-function Home() {
+export default function Home() {
   return (
-    <main>
+    <main className="h-screen">
       <LarridinApp />
     </main>
   )
 }
-
-export default Home

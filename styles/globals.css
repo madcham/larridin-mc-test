@@ -4,6 +4,39 @@
 
 @layer base {
   :root {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+
+  .light {
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
@@ -32,43 +65,6 @@
     --destructive-foreground: 210 40% 98%;
 
     --ring: 215 20.2% 65.1%;
-
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
-
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-
-    --border: 216 34% 
-
- 17%;
-    --input: 216 34% 17%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 1.2%;
-
-    --secondary: 222.2 47.4% 11.2%;
-    --secondary-foreground: 210 40% 98%;
-
-    --accent: 216 34% 17%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-
-    --ring: 216 34% 17%;
-
-    --radius: 0.5rem;
   }
 }
 
@@ -80,4 +76,81 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Additional global styles */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to right, var(--primary), var(--accent));
+}
+
+.bg-gradient {
+  background-image: linear-gradient(to bottom right, var(--primary), var(--accent));
+}
+
+/* Ensure proper styling for dialog content */
+.dialog-content {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Responsive font sizes */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+  }
+  h3 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Improve button and input focus styles */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Ensure proper contrast for placeholder text */
+::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+
+/* Improve accessibility for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
