@@ -275,14 +275,44 @@ const LarridinApp: React.FC = () => {
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Guide</h2>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <h3 className="text-xl font-bold text-purple-300 mb-4">Quick Start Guide</h3>
-        <ol className="list-decimal list-inside space-y-2 text-gray-300">
-          <li>View your dashboard for an overview of tasks and team performance.</li>
-          <li>Check the Tasks tab for a detailed list of your assignments.</li>
-          <li>Use the Calendar to plan your schedule and set reminders.</li>
-          <li>Monitor your progress in the Analytics section.</li>
-          <li>Refer to this Guide for help and best practices.</li>
-        </ol>
+        <h3 className="text-xl font-bold text-purple-300 mb-4">Welcome to Larridin: Your AI-Powered Management Assistant</h3>
+        <div className="space-y-4 text-gray-300">
+          <p>
+            Larridin is designed to streamline your managerial tasks, boost productivity, and enhance team collaboration. Here's how the app works and why it's an essential tool for managers:
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Dashboard</h4>
+          <p>
+            Your central hub for quick insights. It displays your AI-curated task list, team capacity, and delegation effectiveness. This overview helps you make informed decisions and prioritize your day.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Tasks</h4>
+          <p>
+            Manage and track all your tasks in one place. Tasks are automatically prioritized and include AI suggestions for efficient completion. This feature ensures you're always focused on what's most important.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Calendar</h4>
+          <p>
+            Visualize your schedule and important deadlines. The calendar integrates with your tasks, helping you plan your time effectively and avoid conflicts.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Analytics</h4>
+          <p>
+            Gain insights into your team's performance and your own productivity. Use these metrics to identify areas for improvement and celebrate successes.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">AI Assistant</h4>
+          <p>
+            Your personal AI helper that provides task suggestions, helps with delegation, and offers insights to improve your management style. It learns from your habits to provide increasingly personalized assistance.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Why Larridin for Managers?</h4>
+          <ul className="list-disc list-inside space-y-2">
+            <li>Centralizes all management tasks and information</li>
+            <li>Provides AI-driven insights for better decision making</li>
+            <li>Improves time management and task prioritization</li>
+            <li>Enhances team collaboration and performance tracking</li>
+            <li>Reduces cognitive load by automating routine tasks</li>
+            <li>Adapts to your management style for personalized assistance</li>
+          </ul>
+          <p>
+            Larridin is more than just a task manager; it's your AI-powered partner in effective leadership and team management. Explore each feature to unlock your full potential as a manager!
+          </p>
+        </div>
       </div>
     </div>
   )
