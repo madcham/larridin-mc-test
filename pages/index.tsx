@@ -1,12 +1,13 @@
+import React from 'react'
 import dynamic from 'next/dynamic'
 
-const DynamicLarridinApp = dynamic(() => import('../components/LarridinApp'), { ssr: false })
+const LarridinApp = dynamic(() => import('@/components/LarridinApp'), { ssr: false })
 
-const Home: React.FC = () => {
+function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 dark:from-gray-900 dark:to-gray-800">
-      <DynamicLarridinApp />
-    </div>
+    <main>
+      <LarridinApp />
+    </main>
   )
 }
 
