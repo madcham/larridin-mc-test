@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info, BarChart } from "lucide-react"
+import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info, BarChart, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import * as Dialog from "@radix-ui/react-dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const LarridinApp: React.FC = () => {
@@ -114,8 +114,8 @@ const LarridinApp: React.FC = () => {
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
-            <Dialog>
-              <DialogTrigger asChild>
+            <Dialog.Root>
+              <Dialog.Trigger asChild>
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -125,21 +125,27 @@ const LarridinApp: React.FC = () => {
                   <Zap className="w-4 h-4 mr-2" />
                   AI Suggestions
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-gray-900 border-gray-800">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold text-purple-300">{task.title}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  {getTaskSuggestions(task).map((suggestion, index) => (
-                    <div key={index} className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
-                      <span className="text-2xl">{suggestion.emoji}</span>
-                      <span className="text-gray-200">{suggestion.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </DialogContent>
-            </Dialog>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay className="bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0" />
+                <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-gray-900 border-gray-800 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                  <Dialog.Title className="text-2xl font-bold text-purple-300 mb-4">{task.title}</Dialog.Title>
+                  <div className="space-y-4">
+                    {getTaskSuggestions(task).map((suggestion, index) => (
+                      <div key={index} className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
+                        <span className="text-2xl">{suggestion.emoji}</span>
+                        <span className="text-gray-200">{suggestion.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Dialog.Close asChild>
+                    <button className="text-gray-400 hover:text-gray-100 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:outline-none" aria-label="Close">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </Dialog.Close>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
           </div>
         </div>
       ))}
