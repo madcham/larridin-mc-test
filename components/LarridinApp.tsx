@@ -10,10 +10,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isMounted, setIsMounted] = useState(false) //this is just a test comment to trigger source control
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setIsMounted(true)
+    setIsClient(true)
   }, [])
 
   const tabs = [
@@ -97,7 +97,7 @@ const LarridinApp: React.FC = () => {
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
-            {isMounted && (
+            {isClient && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700">
@@ -130,7 +130,7 @@ const LarridinApp: React.FC = () => {
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
       <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
         Team Capacity
-        {isMounted && (
+        {isClient && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -161,7 +161,7 @@ const LarridinApp: React.FC = () => {
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
       <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
         Delegation Effectiveness
-        {isMounted && (
+        {isClient && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -221,7 +221,7 @@ const LarridinApp: React.FC = () => {
         <div>
           <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
             Today's Tasks
-            {isMounted && (
+            {isClient && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
