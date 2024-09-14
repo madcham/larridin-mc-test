@@ -7,7 +7,6 @@ import { Progress } from "@/components/ui/progress"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-//testing comments
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -19,6 +18,7 @@ const LarridinApp: React.FC = () => {
   const handleTabClick = (tabId: string) => {
     console.log('Tab clicked:', tabId)
     setActiveTab(tabId)
+    console.log('Active tab set to:', tabId)
   }
 
   const handleAISuggestionClick = () => {
@@ -116,7 +116,12 @@ const LarridinApp: React.FC = () => {
             </span>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700" onClick={handleAISuggestionClick}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-purple-600 text-white border-none hover:bg-purple-700" 
+                  onClick={handleAISuggestionClick}
+                >
                   <Zap className="w-4 h-4 mr-2" />
                   AI Suggestions
                 </Button>
@@ -441,33 +446,35 @@ const LarridinApp: React.FC = () => {
   )
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
-      <aside className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 p-4">
-        <SidebarContent />
-      </aside>
-      <div className="md:hidden">
-        <button
-          onClick={handleSidebarToggle}
-          className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-        {isSidebarOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
-            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4" onClick={e => e.stopPropagation()}>
-              <SidebarContent />
+    <TooltipProvider>
+      <div className="flex h-screen bg-gray-900 text-white">
+        <aside className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 p-4">
+          <SidebarContent />
+        </aside>
+        <div className="md:hidden">
+          <button
+            onClick={handleSidebarToggle}
+            className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+          {isSidebarOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
+              <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4" onClick={e => e.stopPropagation()}>
+                <SidebarContent />
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        <main className="flex-1 p-4 md:p-8 overflow-auto">
+          {activeTab === 'dashboard' && renderDashboard()}
+          {activeTab === 'tasks' && renderTasks()}
+          {activeTab === 'calendar' && renderCalendar()}
+          {activeTab === 'analytics' && renderAnalytics()}
+          {activeTab === 'guide' && renderGuide()}
+        </main>
       </div>
-      <main className="flex-1 p-4 md:p-8 overflow-auto">
-        {activeTab === 'dashboard' && renderDashboard()}
-        {activeTab === 'tasks' && renderTasks()}
-        {activeTab === 'calendar' && renderCalendar()}
-        {activeTab === 'analytics' && renderAnalytics()}
-        {activeTab === 'guide' && renderGuide()}
-      </main>
-    </div>
+    </TooltipProvider>
   )
 }
 
