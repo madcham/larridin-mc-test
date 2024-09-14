@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info, BarChart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog as DialogRoot } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const LarridinApp: React.FC = () => {
@@ -114,7 +115,7 @@ const LarridinApp: React.FC = () => {
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
-            <Dialog>
+            <DialogRoot>
               <DialogTrigger asChild>
                 <Button 
                   variant="outline" 
@@ -139,7 +140,7 @@ const LarridinApp: React.FC = () => {
                   ))}
                 </div>
               </DialogContent>
-            </Dialog>
+            </DialogRoot>
           </div>
         </div>
       ))}
