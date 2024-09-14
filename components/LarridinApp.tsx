@@ -15,6 +15,21 @@ const LarridinApp: React.FC = () => {
     console.log('LarridinApp component mounted')
   }, [])
 
+  const handleTabClick = (tabId: string) => {
+    console.log('Tab clicked:', tabId)
+    setActiveTab(tabId)
+  }
+
+  const handleAISuggestionClick = () => {
+    console.log('AI Suggestion clicked')
+    // Your existing AI suggestion logic here
+  }
+
+  const handleSidebarToggle = () => {
+    console.log('Sidebar toggle clicked')
+    setIsSidebarOpen(!isSidebarOpen)
+  }
+
   console.log('Rendering LarridinApp component')
 
   const tabs = [
@@ -100,7 +115,7 @@ const LarridinApp: React.FC = () => {
             </span>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700">
+                <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700" onClick={handleAISuggestionClick}>
                   <Zap className="w-4 h-4 mr-2" />
                   AI Suggestions
                 </Button>
@@ -413,7 +428,7 @@ const LarridinApp: React.FC = () => {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabClick(tab.id)}
             className={`flex items-center gap-3 justify-start py-3 px-4 text-left hover:bg-gray-700 rounded-lg transition-colors duration-200 ${activeTab === tab.id ? 'bg-gray-700' : ''}`}
           >
             {tab.icon}
@@ -431,13 +446,13 @@ const LarridinApp: React.FC = () => {
       </aside>
       <div className="md:hidden">
         <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          onClick={handleSidebarToggle}
           className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
         >
           <Menu className="h-6 w-6" />
         </button>
         {isSidebarOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={() => setIsSidebarOpen(false)}>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
             <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4" onClick={e => e.stopPropagation()}>
               <SidebarContent />
             </div>
