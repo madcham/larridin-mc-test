@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import LarridinApp from '../components/LarridinApp'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 export default function Home() {
   useEffect(() => {
@@ -7,5 +8,11 @@ export default function Home() {
   }, [])
 
   console.log('Rendering Home component')
-  return <LarridinApp />
+  
+  return (
+    <ErrorBoundary>
+      <LarridinApp />
+    </ErrorBoundary>
+  )
 }
+
