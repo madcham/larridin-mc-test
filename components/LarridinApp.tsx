@@ -10,6 +10,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
@@ -92,27 +97,29 @@ const LarridinApp: React.FC = () => {
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700">
-                  <Zap className="w-4 h-4 mr-2" />
-                  AI Suggestions
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-gray-900 border-gray-800">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold text-purple-300">{task.title}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  {getTaskSuggestions(task).map((suggestion, index) => (
-                    <div key={index} className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
-                      <span className="text-2xl">{suggestion.emoji}</span>
-                      <span className="text-gray-200">{suggestion.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </DialogContent>
-            </Dialog>
+            {isMounted && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="bg-purple-600 text-white border-none hover:bg-purple-700">
+                    <Zap className="w-4 h-4 mr-2" />
+                    AI Suggestions
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-gray-900 border-gray-800">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-purple-300">{task.title}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    {getTaskSuggestions(task).map((suggestion, index) => (
+                      <div key={index} className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
+                        <span className="text-2xl">{suggestion.emoji}</span>
+                        <span className="text-gray-200">{suggestion.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         </div>
       ))}
@@ -123,16 +130,18 @@ const LarridinApp: React.FC = () => {
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
       <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
         Team Capacity
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-sm">Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {isMounted && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-sm">Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </h3>
       <div className="space-y-4">
         {teamMembers.map(member => (
@@ -152,16 +161,18 @@ const LarridinApp: React.FC = () => {
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
       <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
         Delegation Effectiveness
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-sm">Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {isMounted && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-sm">Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </h3>
       <div className="flex items-center justify-center">
         <div className="relative w-32 h-32">
@@ -210,16 +221,18 @@ const LarridinApp: React.FC = () => {
         <div>
           <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
             Today's Tasks
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-sm">Tasks are prioritized based on deadlines, importance, and your work patterns.</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            {isMounted && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="w-4 h-4 ml-2 text-gray-400 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-sm">Tasks are prioritized based on deadlines, importance, and your work patterns.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </h3>
           {renderTaskList()}
         </div>
