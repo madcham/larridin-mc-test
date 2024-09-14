@@ -93,7 +93,7 @@ const LarridinApp: React.FC = () => {
           <div className="flex flex-wrap space-x-2 mb-2">
             <span className={`${getSourceColor(task.source)} text-xs font-semibold px-2 py-1 rounded-full`}>{task.source}</span>
             {task.waitedOn && <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs">Blocking</span>}
-            {task.linkedToGoa
+            {task.linkedToGoals
 
 ls && <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">Goal</span>}
           </div>
