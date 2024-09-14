@@ -8,6 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const LarridinApp: React.FC = () => {
+  useEffect(() => {
+    console.log('LarridinApp component mounted')
+  }, [])
+
+  console.log('Rendering LarridinApp component')
+  
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
