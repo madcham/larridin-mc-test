@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info, BarChart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -13,7 +14,7 @@ const LarridinApp: React.FC = () => {
   }, [])
 
   console.log('Rendering LarridinApp component')
-  
+
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
