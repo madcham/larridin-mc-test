@@ -1,6 +1,5 @@
 'use client'
 
-import React, { useState } from 'react'
 import React, { useState, useEffect } from 'react'
 import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Zap, Users, Info, BarChart } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,14 +8,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const LarridinApp: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('dashboard')
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
   useEffect(() => {
     console.log('LarridinApp component mounted')
   }, [])
 
   console.log('Rendering LarridinApp component')
-
-  const [activeTab, setActiveTab] = useState('dashboard')
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
@@ -92,7 +91,9 @@ const LarridinApp: React.FC = () => {
           <div className="flex flex-wrap space-x-2 mb-2">
             <span className={`${getSourceColor(task.source)} text-xs font-semibold px-2 py-1 rounded-full`}>{task.source}</span>
             {task.waitedOn && <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs">Blocking</span>}
-            {task.linkedToGoals && <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">Goal</span>}
+            {task.linkedToGoa
+
+ls && <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">Goal</span>}
           </div>
           <div className="flex flex-wrap justify-between items-center gap-2">
             <span className="flex items-center gap-1 bg-purple-800 text-purple-200 px-2 py-1 rounded-full text-sm">
