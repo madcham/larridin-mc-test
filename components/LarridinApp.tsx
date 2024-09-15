@@ -4,14 +4,12 @@ import React, { useState, useEffect } from 'react'
 import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Users, Info, BarChart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import AINotifications from "./AINotifications"
-import * as Collapsible from '@radix-ui/react-collapsible'
+import Collapsible from "./Collapsible"
 
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 
   useEffect(() => {
     console.log('LarridinApp component mounted')
@@ -93,16 +91,11 @@ const LarridinApp: React.FC = () => {
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
       <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
         Team Capacity
-        <Collapsible.Root open={openTooltip === 'teamCapacity'} onOpenChange={(open) => setOpenTooltip(open ? 'teamCapacity' : null)}>
-          <Collapsible.Trigger asChild>
-            <Button variant="ghost" size="sm" className="ml-2 p-0">
-              <Info className="w-4 h-4 text-gray-400" />
-            </Button>
-          </Collapsible.Trigger>
-          <Collapsible.Content className="mt-2 p-2 bg-gray-700 rounded-md text-sm">
-            Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.
-          </Collapsible.Content>
-        </Collapsible.Root>
+        <Collapsible
+          trigger={<Info className="w-4 h-4 ml-2 text-gray-400" />}
+        >
+          Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.
+        </Collapsible>
       </h3>
       <div className="space-y-4">
         {teamMembers.map(member => (
@@ -114,4 +107,109 @@ const LarridinApp: React.FC = () => {
             </div>
           </div>
         ))}
-      
+      </div>
+    </div>
+  )
+
+  const renderDelegationEffectiveness = () => (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
+      <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
+        Delegation Effectiveness
+        <Collapsible
+          trigger={<Info className="w-4 h-4 ml-2 text-gray-400" />}
+        >
+          Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.
+        </Collapsible>
+      </h3>
+      <div className="flex items-center justify-center">
+        <div className="relative w-32 h-32">
+          <svg className="w-full h-full" viewBox="0 0 36 36">
+            <path
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#4B5563"
+              strokeWidth="3"
+            />
+            <path
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#8B5CF6"
+              strokeWidth="3"
+              strokeDasharray={`${delegationEffectiveness}, 100`}
+            />
+          </svg>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-purple-300">
+            {delegationEffectiveness}%
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderDashboard = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Welcome back, Alex! 👋</h2>
+      <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white shadow-lg rounded-lg p-4">
+        <h3 className="flex items-center gap-2 text-2xl font-bold mb-2">
+          <MessageSquare className="w-6 h-6" />
+          AI Assistant
+        </h3>
+        <p className="text-lg">I've analyzed your workload across all platforms. Here's your optimized task list for today:</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          {renderTeamCapacity()}
+          {renderDelegationEffectiveness()}
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
+            Today's Tasks
+            <Collapsible
+              trigger={<Info className="w-4 h-4 ml-2 text-gray-400" />}
+            >
+              Tasks are prioritized based on deadlines, importance, and your work patterns.
+            </Collapsible>
+          </h3>
+          {renderTaskList()}
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderTasks = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Tasks</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <h3 className="text-xl font-bold text-purple-300 mb-4">All Tasks</h3>
+        {renderTaskList()}
+      </div>
+    </div>
+  )
+
+  const renderCalendar = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Calendar</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <div className="grid grid-cols-7 gap-2">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} className="text-center font-bold">{day}</div>
+          ))}
+          {Array.from({ length: 35 }, (_, i) => (
+            <div key={i} className="aspect-square bg-gray-700 rounded-lg flex items-center justify-center">
+              {i + 1}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderAnalytics = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Analytics</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <h3 className="text-xl font
