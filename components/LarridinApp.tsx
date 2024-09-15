@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import AINotifications from "./AINotifications"
 import Collapsible from "./Collapsible"
 
-const LarridinApp: React.FC = () => {
+const LarridinApp = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -212,4 +212,195 @@ const LarridinApp: React.FC = () => {
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Analytics</h2>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <h3 className="text-xl font
+        <h3 className="text-xl font-bold text-purple-300 mb-4">Task Completion Rate</h3>
+        <div className="flex items-center space-x-2">
+          <BarChart className="w-6 h-6 text-purple-300" />
+          <div className="flex-1 bg-gray-700 h-4 rounded-full overflow-hidden">
+            <div className="bg-purple-500 h-full" style={{ width: '75%' }}></div>
+          </div>
+          <span className="font-bold text-purple-300">75%</span>
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderGuide = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Guide</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <h3 className="text-xl font-bold text-purple-300 mb-4">Welcome to Larridin: Your AI-Powered Management Assistant</h3>
+        <div className="space-y-4 text-gray-300">
+          <p>
+            Larridin is designed to streamline your managerial tasks, boost productivity, and enhance team collaboration. Here's how the app works and why it's an essential tool for managers:
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Dashboard</h4>
+          <p>
+            Your central hub for quick insights. It displays your AI-curated task list, team capacity, and delegation effectiveness. This overview helps you make informed decisions and prioritize your day.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Tasks</h4>
+          <p>
+            Manage and track all your tasks in one place. Tasks are automatically prioritized and include AI suggestions for efficient completion. This feature ensures you're always focused on what's most important.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Calendar</h4>
+          <p>
+            Visualize your schedule and important deadlines. The calendar integrates with your tasks, helping you plan your time effectively and avoid conflicts.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Analytics</h4>
+          <p>
+            Gain insights into your team's performance and your own productivity. Use these metrics to identify areas for improvement and celebrate successes.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">AI Assistant</h4>
+          <p>
+            Your personal AI helper that provides task suggestions, helps with delegation, and offers insights to improve your management style. It learns from your habits to provide increasingly personalized assistance.
+          </p>
+          <h4 className="text-lg font-semibold text-purple-300">Why Larridin for Managers?</h4>
+          <ul className="list-disc list-inside space-y-2">
+            <li>Centralizes all management tasks and information</li>
+            <li>Provides AI-driven insights for better decision making</li>
+            <li>Improves time management and task prioritization</li>
+            <li>Enhances team collaboration and performance tracking</li>
+            <li>Reduces cognitive load by automating routine tasks</li>
+            <li>Adapts to your management style for personalized assistance</li>
+          </ul>
+          <p>
+            Lar
+ridin is more than just a task manager; it's your AI-powered partner in effective leadership and team management. Explore each feature to unlock your full potential as a manager!
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+
+  const SidebarContent = () => (
+    <>
+      <div className="flex items-center gap-2 mb-8">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-8 h-8"
+        >
+          <path
+            d="M9.5 19C8.89 19 8.39 18.65 8.14 18.13L6.31 14.47C6.11 14.06 6 13.61 6 13.14V7.5C6 6.12 7.12 5 8.5 5H14.5C15.88 5 17 6.12 17 7.5V13.14C17 13.61 16.89 14.06 16.69 14.47L14.86 18.13C14.61 18.65 14.11 19 13.5 19H9.5Z"
+            stroke="url(#paint0_linear)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 5V19"
+            stroke="url(#paint1_linear)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 8H7"
+            stroke="url(#paint2_linear)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 11H7"
+            stroke="url(#paint3_linear)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <defs>
+            <linearGradient
+              id="paint0_linear"
+              x1="6"
+              y1="5"
+              x2="17"
+              y2="19"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#8B5CF6" />
+              <stop offset="1" stopColor="#3B82F6" />
+            </linearGradient>
+            <linearGradient
+              id="paint1_linear"
+              x1="12"
+              y1="5"
+              x2="12"
+              y2="19"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#8B5CF6" />
+              <stop offset="1" stopColor="#3B82F6" />
+            </linearGradient>
+            <linearGradient
+              id="paint2_linear"
+              x1="7"
+              y1="8"
+              x2="9"
+              y2="8"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#8B5CF6" />
+              <stop offset="1" stopColor="#3B82F6" />
+            </linearGradient>
+            <linearGradient
+              id="paint3_linear"
+              x1="7"
+              y1="11"
+              x2="9"
+              y2="11"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#8B5CF6" />
+              <stop offset="1" stopColor="#3B82F6" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <h1 className="text-2xl font-bold text-purple-300">Larridin</h1>
+      </div>
+      <nav className="flex flex-col items-stretch h-full space-y-2">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => handleTabClick(tab.id)}
+            className={`flex items-center gap-3 justify-start py-3 px-4 text-left hover:bg-gray-700 rounded-lg transition-colors duration-200 ${activeTab === tab.id ? 'bg-gray-700' : ''}`}
+          >
+            {tab.icon}
+            <span className="text-sm font-medium text-gray-200">{tab.label}</span>
+          </button>
+        ))}
+      </nav>
+    </>
+  )
+
+  return (
+    <div className="flex h-screen bg-gray-900 text-white">
+      <aside className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 p-4">
+        <SidebarContent />
+      </aside>
+      <div className="md:hidden">
+        <button
+          onClick={handleSidebarToggle}
+          className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+        {isSidebarOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
+            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4" onClick={e => e.stopPropagation()}>
+              <SidebarContent />
+            </div>
+          </div>
+        )}
+      </div>
+      <main className="flex-1 p-4 md:p-8 overflow-auto">
+        {activeTab === 'dashboard' && renderDashboard()}
+        {activeTab === 'tasks' && renderTasks()}
+        {activeTab === 'calendar' && renderCalendar()}
+        {activeTab === 'analytics' && renderAnalytics()}
+        {activeTab === 'guide' && renderGuide()}
+      </main>
+    </div>
+  )
+}
+
+export default LarridinApp
