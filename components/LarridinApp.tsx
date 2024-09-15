@@ -263,8 +263,7 @@ const LarridinApp = (): JSX.Element => {
             <li>Adapts to your management style for personalized assistance</li>
           </ul>
           <p>
-            Lar
-ridin is more than just a task manager; it's your AI-powered partner in effective leadership and team management. Explore each feature to unlock your full potential as a manager!
+            Larridin is more than just a task manager; it's your AI-powered partner in effective leadership and team management. Explore each feature to unlock your full potential as a manager!
           </p>
         </div>
       </div>
