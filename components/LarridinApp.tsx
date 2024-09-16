@@ -139,7 +139,7 @@ export default function Component() {
       id: '1', 
       title: 'Optimize Task Delegation', 
       description: 'Improve your delegation strategy for better team productivity.',
-      preview: 'Based on your team's current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
+      preview: 'Based on your teams current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
     },
     { 
       id: '2', 
