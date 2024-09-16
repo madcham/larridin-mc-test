@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Info, BarChart, Lightbulb, ChevronDown, ChevronUp, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -9,6 +9,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 interface Task {
   id: string
@@ -38,7 +43,7 @@ interface AIRecommendation {
   preview: string
 }
 
-export default function Component() {
+export default function LarridinApp() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<string | null>(null)
@@ -46,6 +51,7 @@ export default function Component() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [selectedRecommendation, setSelectedRecommendation] = useState<string | null>(null)
   const [isAIRecommendationsOpen, setIsAIRecommendationsOpen] = useState(true)
+  const [activeFilters, setActiveFilters] = useState<string[]>([])
 
   const [tasks, setTasks] = useState<Task[]>([
     { 
@@ -78,7 +84,7 @@ export default function Component() {
       completed: false,
       aiSuggestions: [
         'Prepare a personalized follow-up email',
-        'Review leads recent interactions with our website',
+        'Review lead's recent interactions with our website',
         'Schedule a discovery call if appropriate'
       ]
     },
@@ -125,13 +131,64 @@ export default function Component() {
       completed: true,
       aiSuggestions: []
     },
+    { 
+      id: '6', 
+      title: 'Respond to customer inquiry 📧', 
+      priority: 'High', 
+      deadline: '2023-07-16', 
+      suggestedTime: '15min', 
+      source: 'gmail', 
+      waitedOn: false, 
+      linkedToGoals: false, 
+      assignedTo: null, 
+      completed: false,
+      aiSuggestions: [
+        'Review customer's purchase history',
+        'Draft a personalized response addressing their concerns',
+        'Offer a solution or escalate to appropriate department if necessary'
+      ]
+    },
+    { 
+      id: '7', 
+      title: 'Update project timeline 📅', 
+      priority: 'Medium', 
+      deadline: '2023-07-21', 
+      suggestedTime: '30min', 
+      source: 'asana', 
+      waitedOn: false, 
+      linkedToGoals: true, 
+      assignedTo: null, 
+      completed: false,
+      aiSuggestions: [
+        'Review current project progress',
+        'Adjust timelines based on recent developments',
+        'Communicate changes to team members'
+      ]
+    },
+    { 
+      id: '8', 
+      title: 'Prepare for client meeting 🤝', 
+      priority: 'High', 
+      deadline: '2023-07-17', 
+      suggestedTime: '1h', 
+      source: 'calendar', 
+      waitedOn: false, 
+      linkedToGoals: true, 
+      assignedTo: null, 
+      completed: false,
+      aiSuggestions: [
+        'Review client's account and recent interactions',
+        'Prepare presentation slides',
+        'Anticipate potential questions and prepare answers'
+      ]
+    }
   ])
 
   const teamMembers: TeamMember[] = [
-    { id: '1', name: 'Alice Johnson', capacity: 75, skills: ['sales', 'communication'] },
-    { id: '2', name: 'Bob Smith', capacity: 90, skills: ['technical', 'project management'] },
-    { id: '3', name: 'Charlie Brown', capacity: 60, skills: ['design', 'customer service'] },
-    { id: '4', name: 'Diana Prince', capacity: 85, skills: ['marketing', 'analytics'] },
+    { id: '1', name: 'Aisha Khan', capacity: 75, skills: ['sales', 'communication'] },
+    { id: '2', name: 'Carlos Rodriguez', capacity: 90, skills: ['technical', 'project management'] },
+    { id: '3', name: 'Zara Chen', capacity: 60, skills: ['design', 'customer service'] },
+    { id: '4', name: 'Jamal Washington', capacity: 85, skills: ['marketing', 'analytics'] },
   ]
 
   const aiRecommendations: AIRecommendation[] = [
@@ -139,7 +196,7 @@ export default function Component() {
       id: '1', 
       title: 'Optimize Task Delegation', 
       description: 'Improve your delegation strategy for better team productivity.',
-      preview: 'Based on your teams current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
+      preview: 'Based on your team's current workload and skills, I recommend delegating the "Update sales pipeline" task to Aisha Khan. Her expertise in sales and communication makes her an ideal fit for this task.'
     },
     { 
       id: '2', 
@@ -188,13 +245,38 @@ export default function Component() {
       case 'slack': return 'bg-purple-500 text-white'
       case 'email': return 'bg-red-500 text-white'
       case 'asana': return 'bg-orange-500 text-white'
+      case 'gmail': return 'bg-yellow-500 text-white'
+      case 'calendar': return 'bg-green-500 text-white'
       default: return 'bg-gray-500 text-white'
     }
   }
 
+  const handleFilterClick = (filter: string) => {
+    setActiveFilters(prev => 
+      prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
+    )
+  }
+
+  const filterAndSortTasks = useMemo(() => {
+    return (tasks: Task[]) => {
+      if (activeFilters.length === 0) return tasks
+
+      const filteredTasks = tasks.filter(task => 
+        activeFilters.includes(task.suggestedTime) || 
+        activeFilters.includes(task.source)
+      )
+
+      return filteredTasks.sort((a, b) => {
+        const aMatchCount = activeFilters.filter(f => f === a.suggestedTime || f === a.source).length
+        const bMatchCount = activeFilters.filter(f => f === b.suggestedTime || f === b.source).length
+        return bMatchCount - aMatchCount
+      })
+    }
+  }, [activeFilters])
+
   const renderTaskList = (showDelegateButton: boolean = false) => (
     <div className="space-y-4">
-      {tasks.map(task => (
+      {filterAndSortTasks(tasks).map(task => (
         <div key={task.id} className="bg-gray-800 rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:scale-102">
           <h3 className="text-lg font-bold text-purple-300 mb-2">{task.title}</h3>
           <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
@@ -229,24 +311,25 @@ export default function Component() {
           </div>
           {task.aiSuggestions.length > 0 && (
             <div className="mt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full justify-start text-left bg-purple-700 hover:bg-purple-600 text-white border-purple-500"
-                onClick={() => handleRecommendationClick(task.id)}
-              >
-                <Zap className="mr-2 h-4 w-4" />
-                AI Suggestions
-              </Button>
-              {selectedRecommendation === task.id && (
-                <div className="mt-2 p-2 bg-gray-700 rounded-md border border-purple-500">
+              <Collapsible>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start text-left bg-purple-700 hover:bg-purple-600 text-white border-purple-500"
+                  >
+                    <Zap className="mr-2 h-4 w-4" />
+                    AI Suggestions
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-2 p-2 bg-gray-700 rounded-md border border-purple-500">
                   <ul className="list-disc list-inside space-y-1">
                     {task.aiSuggestions.map((suggestion, index) => (
                       <li key={index} className="text-sm text-gray-300">{suggestion}</li>
                     ))}
                   </ul>
-                </div>
-              )}
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           )}
           {selectedTask === task.id && (
@@ -279,78 +362,70 @@ export default function Component() {
 
   const renderTeamCapacity = () => (
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
-      <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
-        Team Capacity
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" className="ml-2 p-0">
-                <Info className="w-4 h-4 text-gray-400" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </h3>
-      <div className="space-y-4">
-        {teamMembers.map(member => (
-          <div key={member.id} className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-300">{member.name}</span>
-            <div className="flex items-center gap-2 w-2/3">
-              <Progress value={member.capacity} className="w-full" />
-              <span className="text-sm font-medium text-gray-300">{member.capacity}%</span>
-            </div>
+      <Collapsible>
+        <CollapsibleTrigger asChild>
+          <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center cursor-pointer">
+            Team Capacity
+            <Info className="w-4 h-4 ml-2 text-gray-400" />
+          </h3>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <p className="text-sm text-gray-400 mb-4">Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
+          <div className="space-y-4">
+            {teamMembers.map(member => (
+              <div key={member.id} className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-300">{member.name}</span>
+                <div className="flex items-center gap-2 w-2/3">
+                  <Progress value={member.capacity} className="w-full" />
+                  <span className="text-sm font-medium text-gray-300">{member.capacity}%</span>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   )
 
   const renderDelegationEffectiveness = () => (
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
-      <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
-        Delegation Effectiveness
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" className="ml-2 p-0">
-                <Info className="w-4 h-4 text-gray-400" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </h3>
-      <div className="flex items-center justify-center">
-        <div className="relative w-32 h-32">
-          <svg className="w-full h-full" viewBox="0 0 36 36">
-            <path
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="#4B5563"
-              strokeWidth="3"
-            />
-            <path
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="#8B5CF6"
-              strokeWidth="3"
-              strokeDasharray={`${delegationEffectiveness}, 100`}
-            />
-          </svg>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-purple-300">
-            {delegationEffectiveness}%
+      <Collapsible>
+        <CollapsibleTrigger asChild>
+          <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center cursor-pointer">
+            Delegation Effectiveness
+            <Info className="w-4 h-4 ml-2 text-gray-400" />
+          </h3>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <p className="text-sm text-gray-400 mb-4">Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
+          <div className="flex items-center justify-center">
+            <div className="relative w-32 h-32">
+              <svg className="w-full h-full" viewBox="0 0 36 36">
+                <path
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#4B5563"
+                  strokeWidth="3"
+                />
+                <path
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="3"
+                  strokeDasharray={`${delegationEffectiveness}, 100`}
+                />
+              </svg>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-purple-300">
+                {delegationEffectiveness}%
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   )
 
@@ -394,6 +469,30 @@ export default function Component() {
   const renderTasks = () => (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Tasks</h2>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {['10min', '15min', '30min', '1h', '2h'].map(filter => (
+          <Button
+            key={filter}
+            variant={activeFilters.includes(filter) ? "default" : "outline"}
+            size="sm"
+            onClick={() => handleFilterClick(filter)}
+            className={activeFilters.includes(filter) ? "bg-purple-600 text-white" : "bg-gray-700 text-purple-300"}
+          >
+            {filter}
+          </Button>
+        ))}
+        {['salesforce', 'gmail', 'slack', 'asana', 'email', 'calendar'].map(filter => (
+          <Button
+            key={filter}
+            variant={activeFilters.includes(filter) ? "default" : "outline"}
+            size="sm"
+            onClick={() => handleFilterClick(filter)}
+            className={activeFilters.includes(filter) ? "bg-blue-600 text-white" : "bg-gray-700 text-blue-300"}
+          >
+            {filter}
+          </Button>
+        ))}
+      </div>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
         <h3 className="text-xl font-bold text-purple-300 mb-4">All Tasks</h3>
         {renderTaskList(true)}
@@ -610,12 +709,12 @@ export default function Component() {
         <SidebarContent />
       </aside>
       <div className="md:hidden">
-        <Button
+        <button
           onClick={handleSidebarToggle}
           className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
         >
           <Menu className="h-6 w-6" />
-        </Button>
+        </button>
         {isSidebarOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
             <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4 overflow-y-auto" onClick={e => e.stopPropagation()}>
