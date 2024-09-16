@@ -7,7 +7,6 @@ import { Progress } from "@/components/ui/progress"
 import { Calendar } from "@/components/ui/calendar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
-import { type Date } from 'react-day-picker'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
 
