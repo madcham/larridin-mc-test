@@ -624,5 +624,5 @@ const LarridinApp: React.FC = () => {
     </div>
   )
 }
-// example comment
-export default LarridinApp 
+
+export default LarridinApp
