@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import AINotifications from "./AINotifications"
-//import confetti from 'canvas-confetti'
+// import confetti from 'canvas-confetti'
 
 interface Task {
   id: string
@@ -104,11 +104,11 @@ const LarridinApp: React.FC = () => {
     ))
     setDelegationMessage(`Task delegated to ${teamMembers.find(m => m.id === teamMemberId)?.name}!`)
     setTimeout(() => setDelegationMessage(null), 3000)
-    //confetti({
-      //particleCount: 100,
-      //spread: 70,
-      //origin: { y: 0.6 }
-    //})
+    // confetti({
+    //   particleCount: 100,
+    //   spread: 70,
+    //   origin: { y: 0.6 }
+    // })
   }
 
   const handleRecommendationClick = (recommendationId: string) => {
@@ -353,54 +353,23 @@ const LarridinApp: React.FC = () => {
     )
   }
 
-  const renderCalendar = () => {
-    const staticTasks = [
-      { id: '1', title: 'Update sales pipeline 📊', priority: 'Low', deadline: '2024-09-20', suggestedTime: '15min', source: 'salesforce' },
-      { id: '2', title: 'Follow up with lead 🤝', priority: 'Medium', deadline: '2024-09-19', suggestedTime: '10min', source: 'salesforce' },
-      { id: '3', title: 'Respond to team query 💬', priority: 'High', deadline: '2024-09-15', suggestedTime: '10min', source: 'slack' },
-    ]
-
-    return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-purple-300">Calendar</h2>
-        <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-md border"
-          />
-        </div>
-        <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-          <h3 className="text-xl font-bold text-purple-300 mb-4">Tasks for {date?.toDateString()}</h3>
-          <div className="space-y-4">
-            {staticTasks.map(task => (
-              <div key={task.id} className="bg-gray-700 rounded-lg p-4">
-                <h4 className="text-lg font-bold text-purple-300 mb-2">{task.title}</h4>
-                <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
-                  <span className={`px-2 py-1 rounded-full text-sm ${
-                    task.priority === 'Low' ? 'bg-yellow-800 text-yellow-200' : 
-                    task.priority === 'Medium' ? 'bg-orange-800 text-orange-200' : 
-                    'bg-red-800 text-red-200'
-                  }`}>
-                    Priority: {task.priority}
-                  </span>
-                  <span className="bg-green-800 text-green-200 px-2 py-1 rounded-full text-sm">Deadline: {task.deadline}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="flex items-center gap-1 bg-purple-800 text-purple-200 px-2 py-1 rounded-full text-sm">
-                    <Clock className="w-3 h-3" />
-                    {task.suggestedTime}
-                  </span>
-                  <span className={`${getSourceColor(task.source)} text-xs font-semibold px-2 py-1 rounded-full`}>{task.source}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+  const renderCalendar = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Calendar</h2>
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-md border"
+        />
       </div>
-    )
-  }
+      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <h3 className="text-xl font-bold text-purple-300 mb-4">Tasks for {date?.toDateString()}</h3>
+        {renderTaskList(true, date)}
+      </div>
+    </div>
+  )
 
   const renderGuide = () => (
     <div className="space-y-6">
