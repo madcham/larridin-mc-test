@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Users, Info, BarChart, Lightbulb, ChevronDown, ChevronUp, Zap } from "lucide-react"
+import { CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Info, BarChart, Lightbulb, ChevronDown, ChevronUp, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Calendar } from "@/components/ui/calendar"
@@ -38,7 +38,7 @@ interface AIRecommendation {
   preview: string
 }
 
-const LarridinApp: React.FC = () => {
+export default function Component() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<string | null>(null)
@@ -283,8 +283,10 @@ const LarridinApp: React.FC = () => {
         Team Capacity
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
-              <Info className="w-4 h-4 ml-2 text-gray-400" />
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="ml-2 p-0">
+                <Info className="w-4 h-4 text-gray-400" />
+              </Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
@@ -312,8 +314,10 @@ const LarridinApp: React.FC = () => {
         Delegation Effectiveness
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
-              <Info className="w-4 h-4 ml-2 text-gray-400" />
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="ml-2 p-0">
+                <Info className="w-4 h-4 text-gray-400" />
+              </Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
@@ -370,8 +374,10 @@ const LarridinApp: React.FC = () => {
             Today's Tasks
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
-                  <Info className="w-4 h-4 ml-2 text-gray-400" />
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="ml-2 p-0">
+                    <Info className="w-4 h-4 text-gray-400" />
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Tasks are prioritized based on deadlines, importance, and your work patterns.</p>
@@ -604,12 +610,12 @@ const LarridinApp: React.FC = () => {
         <SidebarContent />
       </aside>
       <div className="md:hidden">
-        <button
+        <Button
           onClick={handleSidebarToggle}
           className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
         >
           <Menu className="h-6 w-6" />
-        </button>
+        </Button>
         {isSidebarOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
             <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4 overflow-y-auto" onClick={e => e.stopPropagation()}>
@@ -624,5 +630,3 @@ const LarridinApp: React.FC = () => {
     </div>
   )
 }
-
-export default LarridinApp
