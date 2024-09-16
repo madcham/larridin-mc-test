@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import AINotifications from "./AINotifications"
+//import AINotifications from "./AINotifications"
 // import confetti from 'canvas-confetti'
 
 interface Task {
@@ -162,7 +162,8 @@ const LarridinApp: React.FC = () => {
               <span className="bg-green-600 text-white px-2 py-1 rounded-full text-sm">Completed</span>
             )}
           </div>
-          <AINotifications taskId={task.id} taskTitle={task.title} />
+          {/* Commented out AINotifications component */}
+          {/* <AINotifications taskId={task.id} taskTitle={task.title} /> */}
           {selectedTask === task.id && (
             <div className="mt-4 space-y-2">
               <h4 className="text-sm font-semibold text-purple-300">Assign to:</h4>
