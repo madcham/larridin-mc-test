@@ -1,68 +1,136 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Calendar, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Users, Info, BarChart } from "lucide-react"
+import React, { useState } from 'react'
+import { Calendar as CalendarIcon, CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Settings, Users, Info, BarChart, Lightbulb, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { Calendar } from "@/components/ui/calendar"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import AINotifications from "./AINotifications"
-import Collapsible from "./Collapsible"
+import confetti from 'canvas-confetti'
+
+interface Task {
+  id: string
+  title: string
+  priority: string
+  deadline: string
+  suggestedTime: string
+  source: string
+  waitedOn: boolean
+  linkedToGoals: boolean
+  assignedTo: string | null
+  completed: boolean
+}
+
+interface TeamMember {
+  id: string
+  name: string
+  capacity: number
+  skills: string[]
+}
+
+interface AIRecommendation {
+  id: string
+  title: string
+  description: string
+  preview: string
+}
 
 const LarridinApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [selectedTask, setSelectedTask] = useState<string | null>(null)
+  const [delegationMessage, setDelegationMessage] = useState<string | null>(null)
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [selectedRecommendation, setSelectedRecommendation] = useState<string | null>(null)
+  const [isAIRecommendationsOpen, setIsAIRecommendationsOpen] = useState(true)
 
-  useEffect(() => {
-    console.log('LarridinApp component mounted')
-  }, [])
+  const [tasks, setTasks] = useState<Task[]>([
+    { id: '1', title: 'Update sales pipeline 📊', priority: 'Low', deadline: '2024-09-20', suggestedTime: '15min', source: 'salesforce', waitedOn: false, linkedToGoals: true, assignedTo: null, completed: false },
+    { id: '2', title: 'Follow up with lead 🤝', priority: 'Medium', deadline: '2024-09-19', suggestedTime: '10min', source: 'salesforce', waitedOn: false, linkedToGoals: false, assignedTo: null, completed: false },
+    { id: '3', title: 'Respond to team query 💬', priority: 'High', deadline: '2024-09-15', suggestedTime: '10min', source: 'slack', waitedOn: true, linkedToGoals: false, assignedTo: null, completed: true },
+    { id: '4', title: 'Prepare quarterly report 📈', priority: 'High', deadline: '2024-09-20', suggestedTime: '2h', source: 'email', waitedOn: false, linkedToGoals: true, assignedTo: '2', completed: false },
+    { id: '5', title: 'Review marketing strategy 🎯', priority: 'Medium', deadline: '2024-09-22', suggestedTime: '1h', source: 'asana', waitedOn: false, linkedToGoals: true, assignedTo: '4', completed: true },
+  ])
 
-  const handleTabClick = (tabId: string) => {
-    console.log('Tab clicked:', tabId)
-    setActiveTab(tabId)
-    console.log('Active tab set to:', tabId)
-  }
-
-  const handleSidebarToggle = () => {
-    console.log('Sidebar toggle clicked')
-    setIsSidebarOpen(!isSidebarOpen)
-  }
-
-  console.log('Rendering LarridinApp component')
-
-  const tabs = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { id: 'tasks', label: 'Tasks', icon: <CheckCircle className="w-5 h-5" /> },
-    { id: 'calendar', label: 'Calendar', icon: <Calendar className="w-5 h-5" /> },
-    { id: 'analytics', label: 'Analytics', icon: <PieChart className="w-5 h-5" /> },
-    { id: 'guide', label: 'Guide', icon: <FileText className="w-5 h-5" /> },
+  const teamMembers: TeamMember[] = [
+    { id: '1', name: 'Alice Johnson', capacity: 75, skills: ['sales', 'communication'] },
+    { id: '2', name: 'Bob Smith', capacity: 90, skills: ['technical', 'project management'] },
+    { id: '3', name: 'Charlie Brown', capacity: 60, skills: ['design', 'customer service'] },
+    { id: '4', name: 'Diana Prince', capacity: 85, skills: ['marketing', 'analytics'] },
   ]
 
-  const tasks = [
-    { id: 1, title: 'Update sales pipeline 📊', priority: 'Low', deadline: '2023-07-18', suggestedTime: '15min', source: 'salesforce', waitedOn: false, linkedToGoals: true },
-    { id: 2, title: 'Follow up with lead 🤝', priority: 'Medium', deadline: '2023-07-19', suggestedTime: '10min', source: 'salesforce', waitedOn: false, linkedToGoals: false },
-    { id: 3, title: 'Respond to team query 💬', priority: 'High', deadline: '2023-07-15', suggestedTime: '10min', source: 'slack', waitedOn: true, linkedToGoals: false },
-  ]
-
-  const teamMembers = [
-    { id: 1, name: 'Alice Johnson', capacity: 75 },
-    { id: 2, name: 'Bob Smith', capacity: 90 },
-    { id: 3, name: 'Charlie Brown', capacity: 60 },
-    { id: 4, name: 'Diana Prince', capacity: 85 },
+  const aiRecommendations: AIRecommendation[] = [
+    { 
+      id: '1', 
+      title: 'Optimize Task Delegation', 
+      description: 'Improve your delegation strategy for better team productivity.',
+      preview: 'Based on your team's current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
+    },
+    { 
+      id: '2', 
+      title: 'Streamline Communication', 
+      description: 'Enhance team collaboration through improved communication channels.',
+      preview: 'To reduce the time spent on responding to team queries, consider setting up a dedicated Slack channel for quick questions. This can help address common issues more efficiently.'
+    },
+    { 
+      id: '3', 
+      title: 'Prioritize High-Impact Tasks', 
+      description: 'Focus on tasks that align with your key goals and objectives.',
+      preview: 'The "Prepare quarterly report" task is crucial for your goals. I suggest blocking out 2 hours tomorrow morning to work on this without interruptions.'
+    },
   ]
 
   const delegationEffectiveness = 78
+
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId)
+    setSelectedTask(null)
+  }
+
+  const handleSidebarToggle = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
+
+  const handleDelegateClick = (taskId: string) => {
+    setSelectedTask(taskId)
+  }
+
+  const handleAssignTask = (taskId: string, teamMemberId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, assignedTo: teamMemberId } : task
+    ))
+    setDelegationMessage(`Task delegated to ${teamMembers.find(m => m.id === teamMemberId)?.name}!`)
+    setTimeout(() => setDelegationMessage(null), 3000)
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    })
+  }
+
+  const handleRecommendationClick = (recommendationId: string) => {
+    setSelectedRecommendation(prevId => prevId === recommendationId ? null : recommendationId)
+  }
 
   const getSourceColor = (source: string) => {
     switch (source) {
       case 'salesforce': return 'bg-blue-500 text-white'
       case 'slack': return 'bg-purple-500 text-white'
+      case 'email': return 'bg-red-500 text-white'
+      case 'asana': return 'bg-orange-500 text-white'
       default: return 'bg-gray-500 text-white'
     }
   }
 
-  const renderTaskList = () => (
+  const renderTaskList = (showDelegateButton: boolean = false, filterDate?: Date) => (
     <div className="space-y-4">
-      {tasks.map(task => (
-        <div key={task.id} className="bg-gray-800 rounded-lg p-4">
+      {tasks
+        .filter(task => !filterDate || new Date(task.deadline).toDateString() === filterDate.toDateString())
+        .map(task => (
+        <div key={task.id} className="bg-gray-800 rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:scale-102">
           <h3 className="text-lg font-bold text-purple-300 mb-2">{task.title}</h3>
           <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
             <span className={`px-2 py-1 rounded-full text-sm ${task.priority === 'Low' ? 'bg-yellow-800 text-yellow-200' : task.priority === 'Medium' ? 'bg-orange-800 text-orange-200' : 'bg-red-800 text-red-200'}`}>
@@ -80,10 +148,46 @@ const LarridinApp: React.FC = () => {
               <Clock className="w-3 h-3" />
               {task.suggestedTime}
             </span>
+            {showDelegateButton && !task.completed && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleDelegateClick(task.id)}
+                className="bg-purple-600 text-white hover:bg-purple-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Delegate
+              </Button>
+            )}
+            {task.completed && (
+              <span className="bg-green-600 text-white px-2 py-1 rounded-full text-sm">Completed</span>
+            )}
           </div>
           <AINotifications taskId={task.id} taskTitle={task.title} />
+          {selectedTask === task.id && (
+            <div className="mt-4 space-y-2">
+              <h4 className="text-sm font-semibold text-purple-300">Assign to:</h4>
+              <div className="flex flex-wrap gap-2">
+                {teamMembers.map(member => (
+                  <Button
+                    key={member.id}
+                    variant="outline"
+                    size="sm"
+                    className={`mr-2 ${task.assignedTo === member.id ? 'bg-green-600 text-white' : 'bg-gray-700 text-white hover:bg-gray-600'}`}
+                    onClick={() => handleAssignTask(task.id, member.id)}
+                  >
+                    {member.name} ({member.capacity}% capacity)
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ))}
+      {delegationMessage && (
+        <div className="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300">
+          {delegationMessage}
+        </div>
+      )}
     </div>
   )
 
@@ -91,11 +195,16 @@ const LarridinApp: React.FC = () => {
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
       <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
         Team Capacity
-        <Collapsible
-          trigger={<Info className="w-4 h-4 ml-2 text-gray-400" />}
-        >
-          Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.
-        </Collapsible>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Info className="w-4 h-4 ml-2 text-gray-400" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </h3>
       <div className="space-y-4">
         {teamMembers.map(member => (
@@ -115,11 +224,16 @@ const LarridinApp: React.FC = () => {
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
       <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
         Delegation Effectiveness
-        <Collapsible
-          trigger={<Info className="w-4 h-4 ml-2 text-gray-400" />}
-        >
-          Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.
-        </Collapsible>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Info className="w-4 h-4 ml-2 text-gray-400" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </h3>
       <div className="flex items-center justify-center">
         <div className="relative w-32 h-32">
@@ -168,11 +282,16 @@ const LarridinApp: React.FC = () => {
         <div>
           <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
             Today's Tasks
-            <Collapsible
-              trigger={<Info className="w-4 h-4 ml-2 text-gray-400" />}
-            >
-              Tasks are prioritized based on deadlines, importance, and your work patterns.
-            </Collapsible>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="w-4 h-4 ml-2 text-gray-400" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Tasks are prioritized based on deadlines, importance, and your work patterns.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </h3>
           {renderTaskList()}
         </div>
@@ -185,90 +304,176 @@ const LarridinApp: React.FC = () => {
       <h2 className="text-3xl font-bold text-purple-300">Tasks</h2>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
         <h3 className="text-xl font-bold text-purple-300 mb-4">All Tasks</h3>
-        {renderTaskList()}
+        {renderTaskList(true)}
       </div>
     </div>
   )
 
-  const renderCalendar = () => (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-purple-300">Calendar</h2>
-      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <div className="grid grid-cols-7 gap-2">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="text-center font-bold">{day}</div>
-          ))}
-          {Array.from({ length: 35 }, (_, i) => (
-            <div key={i} className="aspect-square bg-gray-700 rounded-lg flex items-center justify-center">
-              {i + 1}
+  const renderAnalytics = () => {
+    const completedTasks = tasks.filter(task => task.completed).length
+    const delegatedTasks = tasks.filter(task => task.assignedTo !== null).length
+    const delegationByMember = teamMembers.map(member => ({
+      ...member,
+      delegatedTasks: tasks.filter(task => task.assignedTo === member.id).length
+    }))
+
+    return (
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold text-purple-300">Analytics</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+            <h3 className="text-xl font-bold text-purple-300 mb-4">Task Overview</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300">Completed Tasks:</span>
+                <span className="text-2xl font-bold text-green-400">{completedTasks}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300">Delegated Tasks:</span>
+                <span className="text-2xl font-bold text-blue-400">{delegatedTasks}</span>
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-
-  const renderAnalytics = () => (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-purple-300">Analytics</h2>
-      <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <h3 className="text-xl font-bold text-purple-300 mb-4">Task Completion Rate</h3>
-        <div className="flex items-center space-x-2">
-          <BarChart className="w-6 h-6 text-purple-300" />
-          <div className="flex-1 bg-gray-700 h-4 rounded-full overflow-hidden">
-            <div className="bg-purple-500 h-full" style={{ width: '75%' }}></div>
           </div>
-          <span className="font-bold text-purple-300">75%</span>
+          <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+            <h3 className="text-xl font-bold text-purple-300 mb-4">Delegation Leaderboard</h3>
+            <div className="space-y-4">
+              {delegationByMember
+                .sort((a, b) =>  b.delegatedTasks - a.delegatedTasks)
+                .map(member => (
+                  <div key={member.id} className="flex justify-between items-center">
+                    <span className="text-gray-300">{member.name}:</span>
+                    <span className="text-xl font-bold text-purple-400">{member.delegatedTasks} tasks</span>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  const renderCalendar = () => {
+    const staticTasks = [
+      { id: '1', title: 'Update sales pipeline 📊', priority: 'Low', deadline: '2024-09-20', suggestedTime: '15min', source: 'salesforce' },
+      { id: '2', title: 'Follow up with lead 🤝', priority: 'Medium', deadline: '2024-09-19', suggestedTime: '10min', source: 'salesforce' },
+      { id: '3', title: 'Respond to team query 💬', priority: 'High', deadline: '2024-09-15', suggestedTime: '10min', source: 'slack' },
+    ]
+
+    return (
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold text-purple-300">Calendar</h2>
+        <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            className="rounded-md border"
+          />
+        </div>
+        <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+          <h3 className="text-xl font-bold text-purple-300 mb-4">Tasks for {date?.toDateString()}</h3>
+          <div className="space-y-4">
+            {staticTasks.map(task => (
+              <div key={task.id} className="bg-gray-700 rounded-lg p-4">
+                <h4 className="text-lg font-bold text-purple-300 mb-2">{task.title}</h4>
+                <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
+                  <span className={`px-2 py-1 rounded-full text-sm ${
+                    task.priority === 'Low' ? 'bg-yellow-800 text-yellow-200' : 
+                    task.priority === 'Medium' ? 'bg-orange-800 text-orange-200' : 
+                    'bg-red-800 text-red-200'
+                  }`}>
+                    Priority: {task.priority}
+                  </span>
+                  <span className="bg-green-800 text-green-200 px-2 py-1 rounded-full text-sm">Deadline: {task.deadline}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1 bg-purple-800 text-purple-200 px-2 py-1 rounded-full text-sm">
+                    <Clock className="w-3 h-3" />
+                    {task.suggestedTime}
+                  </span>
+                  <span className={`${getSourceColor(task.source)} text-xs font-semibold px-2 py-1 rounded-full`}>{task.source}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const renderGuide = () => (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Guide</h2>
       <div className="bg-gray-800 shadow-lg rounded-lg p-4">
-        <h3 className="text-xl font-bold text-purple-300 mb-4">Welcome to Larridin: Your AI-Powered Management Assistant</h3>
-        <div className="space-y-4 text-gray-300">
-          <p>
-            Larridin is designed to streamline your managerial tasks, boost productivity, and enhance team collaboration. Here's how the app works and why it's an essential tool for managers:
-          </p>
-          <h4 className="text-lg font-semibold text-purple-300">Dashboard</h4>
-          <p>
-            Your central hub for quick insights. It displays your AI-curated task list, team capacity, and delegation effectiveness. This overview helps you make informed decisions and prioritize your day.
-          </p>
-          <h4 className="text-lg font-semibold text-purple-300">Tasks</h4>
-          <p>
-            Manage and track all your tasks in one place. Tasks are automatically prioritized and include AI suggestions for efficient completion. This feature ensures you're always focused on what's most important.
-          </p>
-          <h4 className="text-lg font-semibold text-purple-300">Calendar</h4>
-          <p>
-            Visualize your schedule and important deadlines. The calendar integrates with your tasks, helping you plan your time effectively and avoid conflicts.
-          </p>
-          <h4 className="text-lg font-semibold text-purple-300">Analytics</h4>
-          <p>
-            Gain insights into your team's performance and your own productivity. Use these metrics to identify areas for improvement and celebrate successes.
-          </p>
-          <h4 className="text-lg font-semibold text-purple-300">AI Assistant</h4>
-          <p>
-            Your personal AI helper that provides task suggestions, helps with delegation, and offers insights to improve your management style. It learns from your habits to provide increasingly personalized assistance.
-          </p>
-          <h4 className="text-lg font-semibold text-purple-300">Why Larridin for Managers?</h4>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Centralizes all management tasks and information</li>
-            <li>Provides AI-driven insights for better decision making</li>
-            <li>Improves time management and task prioritization</li>
-            <li>Enhances team collaboration and performance tracking</li>
-            <li>Reduces cognitive load by automating routine tasks</li>
-            <li>Adapts to your management style for personalized assistance</li>
-          </ul>
-          <p>
-            Larridin is more than just a task manager; it's your AI-powered partner in effective leadership and team management. Explore each feature to unlock your full potential as a manager!
-          </p>
-        </div>
+        <h3 className="text-xl font-bold text-purple-300 mb-4">How to Use Larridin</h3>
+        <ol className="list-decimal list-inside space-y-4 text-gray-300">
+          <li>
+            <strong>Dashboard:</strong> View your AI-optimized task list, team capacity, and delegation effectiveness.
+          </li>
+          <li>
+            <strong>Tasks:</strong> See all your tasks and delegate them to team members. Click the "Delegate" button next to a task to assign it to a team member.
+          </li>
+          <li>
+            <strong>Calendar:</strong> View your tasks in a calendar format. Select a date to see tasks for that specific day.
+          </li>
+          <li>
+            <strong>Analytics:</strong> Track your task completion rate and see how effectively you're delegating tasks to your team members.
+          </li>
+          <li>
+            <strong>Delegation:</strong> When delegating a task, consider the team member's current capacity and skills. The app will show you each member's current workload to help you make informed decisions.
+          </li>
+          <li>
+            <strong>AI Assistant:</strong> Pay attention to the AI Assistant's recommendations on the dashboard. It analyzes your workload across all platforms to provide optimized task lists.
+          </li>
+          <li>
+            <strong>AI Recommendations:</strong> Check the AI Recommendations section in the sidebar for personalized suggestions to improve your productivity and team management.
+          </li>
+        </ol>
       </div>
     </div>
   )
+
+  const renderAIRecommendations = () => (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+      <button
+        onClick={() => setIsAIRecommendationsOpen(!isAIRecommendationsOpen)}
+        className="flex items-center justify-between w-full text-left mb-4"
+      >
+        <h3 className="text-xl font-bold text-purple-300">AI Recommendations</h3>
+        {isAIRecommendationsOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+      </button>
+      {isAIRecommendationsOpen && (
+        <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+          {aiRecommendations.map(recommendation => (
+            <div key={recommendation.id} className="mb-4">
+              <Button
+                variant="outline"
+                className="w-full justify-start text-left hover:bg-purple-700"
+                onClick={() => handleRecommendationClick(recommendation.id)}
+              >
+                <Lightbulb className="mr-2 h-4 w-4" />
+                {recommendation.title}
+              </Button>
+              {selectedRecommendation === recommendation.id && (
+                <div className="mt-2 p-2 bg-gray-700 rounded-md">
+                  <p className="text-sm text-gray-300">{recommendation.preview}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </ScrollArea>
+      )}
+    </div>
+  )
+
+  const tabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, render: renderDashboard },
+    { id: 'tasks', label: 'Tasks', icon: <CheckCircle className="w-5 h-5" />, render: renderTasks },
+    { id: 'calendar', label: 'Calendar', icon: <CalendarIcon className="w-5 h-5" />, render: renderCalendar },
+    { id: 'analytics', label: 'Analytics', icon: <PieChart className="w-5 h-5" />, render: renderAnalytics },
+    { id: 'guide', label: 'Guide', icon: <FileText className="w-5 h-5" />, render: renderGuide },
+  ]
 
   const SidebarContent = () => (
     <>
@@ -368,12 +573,15 @@ const LarridinApp: React.FC = () => {
           </button>
         ))}
       </nav>
+      <div className="mt-8">
+        {renderAIRecommendations()}
+      </div>
     </>
   )
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
-      <aside className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 p-4">
+      <aside className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 p-4 overflow-y-auto">
         <SidebarContent />
       </aside>
       <div className="md:hidden">
@@ -385,18 +593,14 @@ const LarridinApp: React.FC = () => {
         </button>
         {isSidebarOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
-            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4" onClick={e => e.stopPropagation()}>
+            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4 overflow-y-auto" onClick={e => e.stopPropagation()}>
               <SidebarContent />
             </div>
           </div>
         )}
       </div>
       <main className="flex-1 p-4 md:p-8 overflow-auto">
-        {activeTab === 'dashboard' && renderDashboard()}
-        {activeTab === 'tasks' && renderTasks()}
-        {activeTab === 'calendar' && renderCalendar()}
-        {activeTab === 'analytics' && renderAnalytics()}
-        {activeTab === 'guide' && renderGuide()}
+        {tabs.find(tab => tab.id === activeTab)?.render()}
       </main>
     </div>
   )
