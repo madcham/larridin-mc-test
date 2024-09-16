@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import AINotifications from "./AINotifications"
-import confetti from 'canvas-confetti'
+//import confetti from 'canvas-confetti'
 
 interface Task {
   id: string
@@ -104,11 +104,11 @@ const LarridinApp: React.FC = () => {
     ))
     setDelegationMessage(`Task delegated to ${teamMembers.find(m => m.id === teamMemberId)?.name}!`)
     setTimeout(() => setDelegationMessage(null), 3000)
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    })
+    //confetti({
+      //particleCount: 100,
+      //spread: 70,
+      //origin: { y: 0.6 }
+    //})
   }
 
   const handleRecommendationClick = (recommendationId: string) => {
