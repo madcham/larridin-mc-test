@@ -231,14 +231,14 @@ const LarridinApp: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full justify-start text-left hover:bg-purple-700"
+                className="w-full justify-start text-left bg-purple-700 hover:bg-purple-600 text-white border-purple-500"
                 onClick={() => handleRecommendationClick(task.id)}
               >
                 <Zap className="mr-2 h-4 w-4" />
                 AI Suggestions
               </Button>
               {selectedRecommendation === task.id && (
-                <div className="mt-2 p-2 bg-gray-700 rounded-md">
+                <div className="mt-2 p-2 bg-gray-700 rounded-md border border-purple-500">
                   <ul className="list-disc list-inside space-y-1">
                     {task.aiSuggestions.map((suggestion, index) => (
                       <li key={index} className="text-sm text-gray-300">{suggestion}</li>
