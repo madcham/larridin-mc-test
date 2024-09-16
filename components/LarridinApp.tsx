@@ -9,11 +9,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 
 interface Task {
   id: string
@@ -52,6 +47,10 @@ export default function LarridinApp() {
   const [selectedRecommendation, setSelectedRecommendation] = useState<string | null>(null)
   const [isAIRecommendationsOpen, setIsAIRecommendationsOpen] = useState(true)
   const [activeFilters, setActiveFilters] = useState<string[]>([])
+  const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
+    teamCapacity: false,
+    delegationEffectiveness: false,
+  })
 
   const [tasks, setTasks] = useState<Task[]>([
     { 
@@ -131,64 +130,13 @@ export default function LarridinApp() {
       completed: true,
       aiSuggestions: []
     },
-    { 
-      id: '6', 
-      title: 'Respond to customer inquiry 📧', 
-      priority: 'High', 
-      deadline: '2023-07-16', 
-      suggestedTime: '15min', 
-      source: 'gmail', 
-      waitedOn: false, 
-      linkedToGoals: false, 
-      assignedTo: null, 
-      completed: false,
-      aiSuggestions: [
-        'Review customer's purchase history',
-        'Draft a personalized response addressing their concerns',
-        'Offer a solution or escalate to appropriate department if necessary'
-      ]
-    },
-    { 
-      id: '7', 
-      title: 'Update project timeline 📅', 
-      priority: 'Medium', 
-      deadline: '2023-07-21', 
-      suggestedTime: '30min', 
-      source: 'asana', 
-      waitedOn: false, 
-      linkedToGoals: true, 
-      assignedTo: null, 
-      completed: false,
-      aiSuggestions: [
-        'Review current project progress',
-        'Adjust timelines based on recent developments',
-        'Communicate changes to team members'
-      ]
-    },
-    { 
-      id: '8', 
-      title: 'Prepare for client meeting 🤝', 
-      priority: 'High', 
-      deadline: '2023-07-17', 
-      suggestedTime: '1h', 
-      source: 'calendar', 
-      waitedOn: false, 
-      linkedToGoals: true, 
-      assignedTo: null, 
-      completed: false,
-      aiSuggestions: [
-        'Review client's account and recent interactions',
-        'Prepare presentation slides',
-        'Anticipate potential questions and prepare answers'
-      ]
-    }
   ])
 
   const teamMembers: TeamMember[] = [
-    { id: '1', name: 'Aisha Khan', capacity: 75, skills: ['sales', 'communication'] },
-    { id: '2', name: 'Carlos Rodriguez', capacity: 90, skills: ['technical', 'project management'] },
-    { id: '3', name: 'Zara Chen', capacity: 60, skills: ['design', 'customer service'] },
-    { id: '4', name: 'Jamal Washington', capacity: 85, skills: ['marketing', 'analytics'] },
+    { id: '1', name: 'Alice Johnson', capacity: 75, skills: ['sales', 'communication'] },
+    { id: '2', name: 'Bob Smith', capacity: 90, skills: ['technical', 'project management'] },
+    { id: '3', name: 'Charlie Brown', capacity: 60, skills: ['design', 'customer service'] },
+    { id: '4', name: 'Diana Prince', capacity: 85, skills: ['marketing', 'analytics'] },
   ]
 
   const aiRecommendations: AIRecommendation[] = [
@@ -196,7 +144,7 @@ export default function LarridinApp() {
       id: '1', 
       title: 'Optimize Task Delegation', 
       description: 'Improve your delegation strategy for better team productivity.',
-      preview: 'Based on your team's current workload and skills, I recommend delegating the "Update sales pipeline" task to Aisha Khan. Her expertise in sales and communication makes her an ideal fit for this task.'
+      preview: 'Based on your team's current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
     },
     { 
       id: '2', 
@@ -311,25 +259,25 @@ export default function LarridinApp() {
           </div>
           {task.aiSuggestions.length > 0 && (
             <div className="mt-4">
-              <Collapsible>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start text-left bg-purple-700 hover:bg-purple-600 text-white border-purple-500"
-                  >
-                    <Zap className="mr-2 h-4 w-4" />
-                    AI Suggestions
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="mt-2 p-2 bg-gray-700 rounded-md border border-purple-500">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start text-left bg-purple-700 hover:bg-purple-600 text-white border-purple-500"
+                onClick={() => handleRecommendationClick(task.id)}
+              >
+                <Zap className="mr-2 h-4 w-4" />
+                AI Suggestions
+                {selectedRecommendation === task.id ? <ChevronUp className="ml-auto h-4 w-4" /> : <ChevronDown className="ml-auto h-4 w-4" />}
+              </Button>
+              {selectedRecommendation === task.id && (
+                <div className="mt-2 p-2 bg-gray-700 rounded-md border border-purple-500">
                   <ul className="list-disc list-inside space-y-1">
                     {task.aiSuggestions.map((suggestion, index) => (
                       <li key={index} className="text-sm text-gray-300">{suggestion}</li>
                     ))}
                   </ul>
-                </CollapsibleContent>
-              </Collapsible>
+                </div>
+              )}
             </div>
           )}
           {selectedTask === task.id && (
@@ -362,15 +310,17 @@ export default function LarridinApp() {
 
   const renderTeamCapacity = () => (
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
-      <Collapsible>
-        <CollapsibleTrigger asChild>
-          <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center cursor-pointer">
-            Team Capacity
-            <Info className="w-4 h-4 ml-2 text-gray-400" />
-          </h3>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <p className="text-sm text-gray-400 mb-4">Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
+      <h3 
+        className="text-xl font-bold text-purple-300 mb-4 flex items-center cursor-pointer"
+        onClick={() => setExpandedSections(prev => ({ ...prev, teamCapacity: !prev.teamCapacity }))}
+      >
+        Team Capacity
+        <Info className="w-4 h-4 ml-2 text-gray-400" />
+        {expandedSections.teamCapacity ? <ChevronUp className="ml-auto h-4 w-4" /> : <ChevronDown className="ml-auto h-4 w-4" />}
+      </h3>
+      {expandedSections.teamCapacity && (
+        <>
+          <p className="text-sm text-gray-400 mb-4">Team capacity is calculated base d on assigned tasks, working hours, and individual productivity factors.</p>
           <div className="space-y-4">
             {teamMembers.map(member => (
               <div key={member.id} className="flex items-center justify-between">
@@ -382,21 +332,23 @@ export default function LarridinApp() {
               </div>
             ))}
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </>
+      )}
     </div>
   )
 
   const renderDelegationEffectiveness = () => (
     <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6">
-      <Collapsible>
-        <CollapsibleTrigger asChild>
-          <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center cursor-pointer">
-            Delegation Effectiveness
-            <Info className="w-4 h-4 ml-2 text-gray-400" />
-          </h3>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
+      <h3 
+        className="text-xl font-bold text-purple-300 mb-4 flex items-center cursor-pointer"
+        onClick={() => setExpandedSections(prev => ({ ...prev, delegationEffectiveness: !prev.delegationEffectiveness }))}
+      >
+        Delegation Effectiveness
+        <Info className="w-4 h-4 ml-2 text-gray-400" />
+        {expandedSections.delegationEffectiveness ? <ChevronUp className="ml-auto h-4 w-4" /> : <ChevronDown className="ml-auto h-4 w-4" />}
+      </h3>
+      {expandedSections.delegationEffectiveness && (
+        <>
           <p className="text-sm text-gray-400 mb-4">Delegation effectiveness is measured by task completion rates, team feedback, and overall productivity improvements.</p>
           <div className="flex items-center justify-center">
             <div className="relative w-32 h-32">
@@ -424,8 +376,8 @@ export default function LarridinApp() {
               </div>
             </div>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </>
+      )}
     </div>
   )
 
@@ -692,7 +644,7 @@ export default function LarridinApp() {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => handleTabClick(tab.id)}
+            onClick={() =>  handleTabClick(tab.id)}
             className={`flex items-center gap-3 justify-start py-3 px-4 text-left hover:bg-gray-700 rounded-lg transition-colors duration-200 ${activeTab === tab.id ? 'bg-gray-700' : ''}`}
           >
             {tab.icon}
