@@ -78,7 +78,7 @@ export default function Component() {
       completed: false,
       aiSuggestions: [
         'Prepare a personalized follow-up email',
-        'Review lead's recent interactions with our website',
+        'Review leads recent interactions with our website',
         'Schedule a discovery call if appropriate'
       ]
     },
