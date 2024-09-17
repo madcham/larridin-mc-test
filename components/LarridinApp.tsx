@@ -140,58 +140,58 @@ export default function LarridinApp() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     {
       id: '1',
-      name: 'Alice Johnson',
+      name: 'Aisha Patel',
       role: 'Sales Manager',
-      email: 'alice@example.com',
+      email: 'aisha@example.com',
       capacity: 75,
       skills: [
         { name: 'Sales', level: 5 },
         { name: 'Communication', level: 4 },
         { name: 'Project Management', level: 3 },
       ],
-      bio: 'Alice is an experienced sales manager with a track record of exceeding targets.',
+      bio: 'Aisha is an experienced sales manager with a track record of exceeding targets.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
     {
       id: '2',
-      name: 'Bob Smith',
+      name: 'Jamal Washington',
       role: 'Technical Lead',
-      email: 'bob@example.com',
+      email: 'jamal@example.com',
       capacity: 90,
       skills: [
         { name: 'Programming', level: 5 },
         { name: 'System Design', level: 4 },
         { name: 'Project Management', level: 3 },
       ],
-      bio: 'Bob is a skilled technical lead with expertise in multiple programming languages and system design.',
+      bio: 'Jamal is a skilled technical lead with expertise in multiple programming languages and system design.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
     {
       id: '3',
-      name: 'Charlie Brown',
+      name: 'Yuki Tanaka',
       role: 'UX Designer',
-      email: 'charlie@example.com',
+      email: 'yuki@example.com',
       capacity: 60,
       skills: [
         { name: 'UI Design', level: 5 },
         { name: 'User Research', level: 4 },
         { name: 'Prototyping', level: 4 },
       ],
-      bio: 'Charlie is a creative UX designer passionate about creating intuitive and engaging user experiences.',
+      bio: 'Yuki is a creative UX designer passionate about creating intuitive and engaging user experiences.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
     {
       id: '4',
-      name: 'Diana Prince',
+      name: 'Sofia Rodriguez',
       role: 'Marketing Specialist',
-      email: 'diana@example.com',
+      email: 'sofia@example.com',
       capacity: 85,
       skills: [
         { name: 'Digital Marketing', level: 5 },
         { name: 'Content Creation', level: 4 },
         { name: 'Analytics', level: 3 },
       ],
-      bio: 'Diana is a results-driven marketing specialist with a focus on digital strategies and content marketing.',
+      bio: 'Sofia is a results-driven marketing specialist with a focus on digital strategies and content marketing.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
   ])
@@ -598,6 +598,10 @@ export default function LarridinApp() {
           </li>
           <li>
             <strong>Team:</strong> View detailed profiles of team members and analyze skill gaps within the team.
+            <ul className="list-disc list-inside ml-4 mt-2">
+              <li><strong>Team Capacity:</strong> Shows each team member's current workload.</li>
+              <li><strong>Skill Gap Analysis:</strong> Provides an overview of the team's collective skills and identifies potential areas for improvement.</li>
+            </ul>
           </li>
           <li>
             <strong>Delegation:</strong> When delegating a task, consider the team member's current capacity and skills. The app will show you each member's current workload to help you make informed decisions.
