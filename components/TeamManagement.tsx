@@ -1,6 +1,8 @@
-import React from 'react'
-import TeamMemberProfile from './TeamMemberProfile'
-import SkillGapAnalysis from './SkillGapAnalysis'
+import React, { useState } from 'react'
+import { Card, CardContent } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface Skill {
   name: string
@@ -19,37 +21,118 @@ interface TeamMember {
 }
 
 interface TeamManagementProps {
-  teamMembers: TeamMember[]
+  teamMembers?: TeamMember[]
 }
 
-const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers }) => {
+const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => {
+  const [expandedMember, setExpandedMember] = useState<string | null>(null)
+
+  const toggleMemberExpansion = (memberId: string) => {
+    setExpandedMember(expandedMember === memberId ? null : memberId)
+  }
+
+  const calculateTeamSkills = () => {
+    const skillMap: { [key: string]: number[] } = {}
+    teamMembers.forEach(member => {
+      member.skills.forEach(skill => {
+        if (!skillMap[skill.name]) {
+          skillMap[skill.name] = []
+        }
+        skillMap[skill.name].push(skill.level)
+      })
+    })
+    return Object.entries(skillMap).map(([name, levels]) => ({
+      name,
+      averageLevel: levels.reduce((a, b) => a + b, 0) / levels.length
+    }))
+  }
+
+  const teamSkills = calculateTeamSkills()
+
   if (!teamMembers || teamMembers.length === 0) {
     return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-purple-300">Team Management</h2>
-        <p className="text-gray-400">No team members data available.</p>
-      </div>
+      <Card className="bg-gray-800 text-white">
+        <CardContent className="p-6">
+          <h3 className="text-2xl font-semibold mb-4">Team Management</h3>
+          <p className="text-gray-400">No team members data available.</p>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-purple-300">Team Management</h2>
-      
-      <div className="mb-4">
-        <h3 className="text-xl font-semibold text-purple-200">Team Capacity</h3>
-        <p className="text-gray-400 mt-2">
-          Team capacity represents the workload of each team member. It is calculated based on assigned tasks, working hours, and individual productivity factors. 
-          A higher percentage indicates a heavier workload.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {teamMembers.map(member => (
-          <TeamMemberProfile key={member.id} member={member} />
+          <Card key={member.id} className="bg-gray-800 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4 mb-4">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage src={member.avatar} alt={member.name} />
+                  <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="text-xl font-semibold">{member.name}</h3>
+                  <p className="text-gray-400">{member.role}</p>
+                </div>
+              </div>
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-400">Capacity</span>
+                  <span className="text-sm font-medium text-gray-400">{member.capacity}%</span>
+                </div>
+                <Progress value={member.capacity} className="w-full" />
+              </div>
+              <div className="mb-4">
+                <h4 className="text-lg font-semibold mb-2">Skills</h4>
+                <div className="flex flex-wrap gap-2">
+                  {member.skills.map(skill => (
+                    <Badge key={skill.name} variant="secondary">
+                      {skill.name} (Level {skill.level})
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              <button
+                className="text-purple-400 hover:text-purple-300 transition-colors duration-200"
+                onClick={() => toggleMemberExpansion(member.id)}
+              >
+                {expandedMember === member.id ? 'Hide Details' : 'Show Details'}
+              </button>
+              {expandedMember === member.id && (
+                <div className="mt-4">
+                  <h4 className="text-lg font-semibold mb-2">Bio</h4>
+                  <p className="text-gray-400">{member.bio}</p>
+                  <h4 className="text-lg font-semibold mt-4 mb-2">Contact</h4>
+                  <p className="text-gray-400">{member.email}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         ))}
       </div>
-      <SkillGapAnalysis teamMembers={teamMembers} />
+      <Card className="bg-gray-800 text-white">
+        <CardContent className="p-6">
+          <h3 className="text-2xl font-semibold mb-4">Team Skill Gap Analysis</h3>
+          <p className="text-gray-400 mb-4">
+            This analysis shows the average skill level across the team for each skill. 
+            It helps identify areas where the team excels and potential gaps that may need addressing.
+          </p>
+          <div className="space-y-4">
+            {teamSkills.map(skill => (
+              <div key={skill.name}>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-400">{skill.name}</span>
+                  <span className="text-sm font-medium text-gray-400">
+                    {skill.averageLevel.toFixed(1)}
+                  </span>
+                </div>
+                <Progress value={skill.averageLevel * 20} className="w-full" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
