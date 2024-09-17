@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import Avatar from './Avatar'
 
 interface Skill {
   name: string
@@ -21,17 +22,6 @@ interface TeamMember {
 interface TeamMemberProfileProps {
   member: TeamMember
 }
-
-// Simple Avatar component
-const Avatar: React.FC<{ src?: string; alt: string; fallback: string }> = ({ src, alt, fallback }) => (
-  <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
-    {src ? (
-      <img src={src} alt={alt} className="w-full h-full object-cover" />
-    ) : (
-      <span className="text-lg font-semibold text-gray-600">{fallback}</span>
-    )}
-  </div>
-)
 
 const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ member }) => {
   if (!member) {
@@ -54,6 +44,7 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ member }) => {
             src={avatar} 
             alt={name} 
             fallback={name.split(' ').map(n => n[0]).join('')}
+            className="w-12 h-12"
           />
           <div>
             <h3 className="text-xl font-bold">{name}</h3>

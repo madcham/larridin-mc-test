@@ -728,28 +728,25 @@ export default function LarridinApp() {
   )
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
-      <aside className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 p-4 overflow-y-auto">
-        <SidebarContent />
-      </aside>
-      <div className="md:hidden">
-        <button
-          onClick={handleSidebarToggle}
-          className="fixed top-4 left-4 z-20 bg-gray-800 p-2 rounded-md shadow-md"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-        {isSidebarOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={handleSidebarToggle}>
-            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gray-800 p-4 overflow-y-auto" onClick={e => e.stopPropagation()}>
-              <SidebarContent />
-            </div>
-          </div>
-        )}
-      </div>
-      <main className="flex-1 p-4 md:p-8 overflow-auto">
-        {tabs.find(tab => tab.id === activeTab)?.render()}
-      </main>
+    <div className="container mx-auto p-4">
+      <Tabs defaultValue="dashboard" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="tasks">Tasks</TabsTrigger>
+          <TabsTrigger value="calendar">Calendar</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="guide">Guide</TabsTrigger>
+        </TabsList>
+        <TabsContent value="dashboard">{renderDashboard()}</TabsContent>
+        <TabsContent value="tasks">{renderTasks()}</TabsContent>
+        <TabsContent value="calendar">{renderCalendar()}</TabsContent>
+        <TabsContent value="analytics">{renderAnalytics()}</TabsContent>
+        <TabsContent value="team">
+          <TeamManagement teamMembers={teamMembers} />
+        </TabsContent>
+        <TabsContent value="guide">{renderGuide()}</TabsContent>
+      </Tabs>
     </div>
   )
 }
