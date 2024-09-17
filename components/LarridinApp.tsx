@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Info, BarChart, Lightbulb, ChevronDown, ChevronUp, Zap } from "lucide-react"
+import { CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Info, BarChart, Lightbulb, ChevronDown, ChevronUp, Zap, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Calendar } from "@/components/ui/calendar"
@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
+import TeamManagement from './TeamManagement'
 
 interface Task {
   id: string
@@ -27,8 +28,12 @@ interface Task {
 interface TeamMember {
   id: string
   name: string
+  role: string
+  email: string
   capacity: number
-  skills: string[]
+  skills: { name: string; level: number }[]
+  bio: string
+  avatar: string
 }
 
 interface AIRecommendation {
@@ -83,7 +88,7 @@ export default function LarridinApp() {
       completed: false,
       aiSuggestions: [
         'Prepare a personalized follow-up email',
-        'Review leads recent interactions with our website',
+        'Review lead's recent interactions with our website',
         'Schedule a discovery call if appropriate'
       ]
     },
@@ -132,19 +137,71 @@ export default function LarridinApp() {
     },
   ])
 
-  const teamMembers: TeamMember[] = [
-    { id: '1', name: 'Alice Johnson', capacity: 75, skills: ['sales', 'communication'] },
-    { id: '2', name: 'Bob Smith', capacity: 90, skills: ['technical', 'project management'] },
-    { id: '3', name: 'Charlie Brown', capacity: 60, skills: ['design', 'customer service'] },
-    { id: '4', name: 'Diana Prince', capacity: 85, skills: ['marketing', 'analytics'] },
-  ]
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
+    {
+      id: '1',
+      name: 'Alice Johnson',
+      role: 'Sales Manager',
+      email: 'alice@example.com',
+      capacity: 75,
+      skills: [
+        { name: 'Sales', level: 5 },
+        { name: 'Communication', level: 4 },
+        { name: 'Project Management', level: 3 },
+      ],
+      bio: 'Alice is an experienced sales manager with a track record of exceeding targets.',
+      avatar: '/placeholder.svg?height=200&width=200',
+    },
+    {
+      id: '2',
+      name: 'Bob Smith',
+      role: 'Technical Lead',
+      email: 'bob@example.com',
+      capacity: 90,
+      skills: [
+        { name: 'Programming', level: 5 },
+        { name: 'System Design', level: 4 },
+        { name: 'Project Management', level: 3 },
+      ],
+      bio: 'Bob is a skilled technical lead with expertise in multiple programming languages and system design.',
+      avatar: '/placeholder.svg?height=200&width=200',
+    },
+    {
+      id: '3',
+      name: 'Charlie Brown',
+      role: 'UX Designer',
+      email: 'charlie@example.com',
+      capacity: 60,
+      skills: [
+        { name: 'UI Design', level: 5 },
+        { name: 'User Research', level: 4 },
+        { name: 'Prototyping', level: 4 },
+      ],
+      bio: 'Charlie is a creative UX designer passionate about creating intuitive and engaging user experiences.',
+      avatar: '/placeholder.svg?height=200&width=200',
+    },
+    {
+      id: '4',
+      name: 'Diana Prince',
+      role: 'Marketing Specialist',
+      email: 'diana@example.com',
+      capacity: 85,
+      skills: [
+        { name: 'Digital Marketing', level: 5 },
+        { name: 'Content Creation', level: 4 },
+        { name: 'Analytics', level: 3 },
+      ],
+      bio: 'Diana is a results-driven marketing specialist with a focus on digital strategies and content marketing.',
+      avatar: '/placeholder.svg?height=200&width=200',
+    },
+  ])
 
   const aiRecommendations: AIRecommendation[] = [
     { 
       id: '1', 
       title: 'Optimize Task Delegation', 
       description: 'Improve your delegation strategy for better team productivity.',
-      preview: 'Based on your teams current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
+      preview: 'Based on your team's current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
     },
     { 
       id: '2', 
@@ -320,7 +377,7 @@ export default function LarridinApp() {
       </h3>
       {expandedSections.teamCapacity && (
         <>
-          <p className="text-sm text-gray-400 mb-4">Team capacity is calculated base d on assigned tasks, working hours, and individual productivity factors.</p>
+          <p className="text-sm text-gray-400 mb-4">Team capacity is calculated based on assigned tasks, working hours, and individual productivity factors.</p>
           <div className="space-y-4">
             {teamMembers.map(member => (
               <div key={member.id} className="flex items-center justify-between">
@@ -514,6 +571,13 @@ export default function LarridinApp() {
     </div>
   )
 
+  const renderTeam = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Team Management</h2>
+      <TeamManagement teamMembers={teamMembers} />
+    </div>
+  )
+
   const renderGuide = () => (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Guide</h2>
@@ -531,6 +595,9 @@ export default function LarridinApp() {
           </li>
           <li>
             <strong>Analytics:</strong> Track your task completion rate and see how effectively you're delegating tasks to your team members.
+          </li>
+          <li>
+            <strong>Team:</strong> View detailed profiles of team members and analyze skill gaps within the team.
           </li>
           <li>
             <strong>Delegation:</strong> When delegating a task, consider the team member's current capacity and skills. The app will show you each member's current workload to help you make informed decisions.
@@ -551,6 +618,7 @@ export default function LarridinApp() {
     { id: 'tasks', label: 'Tasks', icon: <CheckCircle className="w-5 h-5" />, render: renderTasks },
     { id: 'calendar', label: 'Calendar', icon: <FileText className="w-5 h-5" />, render: renderCalendar },
     { id: 'analytics', label: 'Analytics', icon: <PieChart className="w-5 h-5" />, render: renderAnalytics },
+    { id: 'team', label: 'Team', icon: <Users className="w-5 h-5" />, render: renderTeam },
     { id: 'guide', label: 'Guide', icon: <FileText className="w-5 h-5" />, render: renderGuide },
   ]
 
@@ -644,7 +712,7 @@ export default function LarridinApp() {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() =>  handleTabClick(tab.id)}
+            onClick={() => handleTabClick(tab.id)}
             className={`flex items-center gap-3 justify-start py-3 px-4 text-left hover:bg-gray-700 rounded-lg transition-colors duration-200 ${activeTab === tab.id ? 'bg-gray-700' : ''}`}
           >
             {tab.icon}
