@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Info, BarChart, Lightbulb, ChevronDown, ChevronUp, Zap, Users } from "lucide-react"
+import { CheckCircle, Clock, FileText, LayoutDashboard, Menu, MessageSquare, PieChart, Info, BarChart, Lightbulb, ChevronDown, ChevronUp, Zap, Users, Link } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Calendar } from "@/components/ui/calendar"
@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
 import TeamManagement from './TeamManagement'
 
 interface Task {
@@ -36,11 +37,12 @@ interface TeamMember {
   avatar: string
 }
 
-interface AIRecommendation {
+interface IntegrationSystem {
   id: string
-  title: string
-  description: string
-  preview: string
+  name: string
+  icon: React.ReactNode
+  isAuthenticated: boolean
+  rules: string[]
 }
 
 export default function LarridinApp() {
@@ -88,7 +90,7 @@ export default function LarridinApp() {
       completed: false,
       aiSuggestions: [
         'Prepare a personalized follow-up email',
-        'Review leads recent interactions with our website',
+        'Review lead's recent interactions with our website',
         'Schedule a discovery call if appropriate'
       ]
     },
@@ -140,82 +142,67 @@ export default function LarridinApp() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     {
       id: '1',
-      name: 'Alice Johnson',
+      name: 'Aisha Patel',
       role: 'Sales Manager',
-      email: 'alice@example.com',
+      email: 'aisha@example.com',
       capacity: 75,
       skills: [
         { name: 'Sales', level: 5 },
         { name: 'Communication', level: 4 },
         { name: 'Project Management', level: 3 },
       ],
-      bio: 'Alice is an experienced sales manager with a track record of exceeding targets.',
+      bio: 'Aisha is an experienced sales manager with a track record of exceeding targets.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
     {
       id: '2',
-      name: 'Bob Smith',
+      name: 'Jamal Washington',
       role: 'Technical Lead',
-      email: 'bob@example.com',
+      email: 'jamal@example.com',
       capacity: 90,
       skills: [
         { name: 'Programming', level: 5 },
         { name: 'System Design', level: 4 },
         { name: 'Project Management', level: 3 },
       ],
-      bio: 'Bob is a skilled technical lead with expertise in multiple programming languages and system design.',
+      bio: 'Jamal is a skilled technical lead with expertise in multiple programming languages and system design.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
     {
       id: '3',
-      name: 'Charlie Brown',
+      name: 'Yuki Tanaka',
       role: 'UX Designer',
-      email: 'charlie@example.com',
+      email: 'yuki@example.com',
       capacity: 60,
       skills: [
         { name: 'UI Design', level: 5 },
         { name: 'User Research', level: 4 },
         { name: 'Prototyping', level: 4 },
       ],
-      bio: 'Charlie is a creative UX designer passionate about creating intuitive and engaging user experiences.',
+      bio: 'Yuki is a creative UX designer passionate about creating intuitive and engaging user experiences.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
     {
       id: '4',
-      name: 'Diana Prince',
+      name: 'Sofia Rodriguez',
       role: 'Marketing Specialist',
-      email: 'diana@example.com',
+      email: 'sofia@example.com',
       capacity: 85,
       skills: [
         { name: 'Digital Marketing', level: 5 },
         { name: 'Content Creation', level: 4 },
         { name: 'Analytics', level: 3 },
       ],
-      bio: 'Diana is a results-driven marketing specialist with a focus on digital strategies and content marketing.',
+      bio: 'Sofia is a results-driven marketing specialist with a focus on digital strategies and content marketing.',
       avatar: '/placeholder.svg?height=200&width=200',
     },
   ])
 
-  const aiRecommendations: AIRecommendation[] = [
-    { 
-      id: '1', 
-      title: 'Optimize Task Delegation', 
-      description: 'Improve your delegation strategy for better team productivity.',
-      preview: 'Based on your teams current workload and skills, I recommend delegating the "Update sales pipeline" task to Alice Johnson. Her expertise in sales and communication makes her an ideal fit for this task.'
-    },
-    { 
-      id: '2', 
-      title: 'Streamline Communication', 
-      description: 'Enhance team collaboration through improved communication channels.',
-      preview: 'To reduce the time spent on responding to team queries, consider setting up a dedicated Slack channel for quick questions. This can help address common issues more efficiently.'
-    },
-    { 
-      id: '3', 
-      title: 'Prioritize High-Impact Tasks', 
-      description: 'Focus on tasks that align with your key goals and objectives.',
-      preview: 'The "Prepare quarterly report" task is crucial for your goals. I suggest blocking out 2 hours tomorrow morning to work on this without interruptions.'
-    },
-  ]
+  const [integrationSystems, setIntegrationSystems] = useState<IntegrationSystem[]>([
+    { id: 'salesforce', name: 'Salesforce', icon: <BarChart className="w-6 h-6" />, isAuthenticated: false, rules: [] },
+    { id: 'gmail', name: 'Gmail', icon: <MessageSquare className="w-6 h-6" />, isAuthenticated: false, rules: [] },
+    { id: 'slack', name: 'Slack', icon: <MessageSquare className="w-6 h-6" />, isAuthenticated: false, rules: [] },
+  ])
 
   const delegationEffectiveness = 78
 
@@ -278,6 +265,55 @@ export default function LarridinApp() {
       })
     }
   }, [activeFilters])
+
+  const handleAuthenticate = (systemId: string) => {
+    setIntegrationSystems(prevSystems =>
+      prevSystems.map(system =>
+        system.id === systemId ? { ...system, isAuthenticated: true } : system
+      )
+    )
+  }
+
+  const handleToggleRule = (systemId: string, rule: string) => {
+    setIntegrationSystems(prevSystems =>
+      prevSystems.map(system =>
+        system.id === systemId
+          ? {
+              ...system,
+              rules: system.rules.includes(rule)
+                ? system.rules.filter(r => r !== rule)
+                : [...system.rules, rule]
+            }
+          : system
+      )
+    )
+  }
+
+  const handleImportTasks = () => {
+    // Simulate task import
+    const newTasks = integrationSystems.flatMap(system =>
+      system.isAuthenticated && system.rules.length > 0
+        ? [
+            {
+              id: `imported-${system.id}-${Date.now()}`,
+              title: `Imported task from ${system.name}`,
+              priority: 'Medium',
+              deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+              suggestedTime: '30min',
+              source: system.id,
+              waitedOn: false,
+              linkedToGoals: false,
+              assignedTo: null,
+              completed: false,
+              aiSuggestions: [`Review this task imported from ${system.name}`]
+            }
+          ]
+        : []
+    )
+
+    setTasks(prevTasks => [...prevTasks, ...newTasks])
+    alert(`Successfully imported ${newTasks.length} tasks!`)
+  }
 
   const renderTaskList = (showDelegateButton: boolean = false) => (
     <div className="space-y-4">
@@ -578,6 +614,57 @@ export default function LarridinApp() {
     </div>
   )
 
+  const renderIntegrations = () => (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-purple-300">Integrations</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {integrationSystems.map(system => (
+          <Card key={system.id} className="bg-gray-800 text-white border border-purple-500">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  {system.icon}
+                  <h3 className="text-xl font-semibold text-purple-300">{system.name}</h3>
+                </div>
+                <Button
+                  variant={system.isAuthenticated ? "secondary" : "default"}
+                  onClick={() => handleAuthenticate(system.id)}
+                  disabled={system.isAuthenticated}
+                >
+                  {system.isAuthenticated ? 'Authenticated' : 'Authenticate'}
+                </Button>
+              </div>
+              {system.isAuthenticated && (
+                <div className="space-y-2">
+                  <h4 className="text-lg font-semibold text-purple-300">Import Rules</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={system.rules.includes('recent')}
+                        onCheckedChange={() => handleToggleRule(system.id, 'recent')}
+                      />
+                      <label>All items from past 24 hours</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={system.rules.includes('highPriority')}
+                        onCheckedChange={() => handleToggleRule(system.id, 'highPriority')}
+                      />
+                      <label>High priority items from past 48 hours</label>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <Button onClick={handleImportTasks} className="mt-4">
+        Import Tasks
+      </Button>
+    </div>
+  )
+
   const renderGuide = () => (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-purple-300">Guide</h2>
@@ -600,6 +687,9 @@ export default function LarridinApp() {
             <strong>Team:</strong> View detailed profiles of team members and analyze skill gaps within the team.
           </li>
           <li>
+            <strong>Integrations:</strong> Connect and manage external tools and services to import tasks automatically.
+          </li>
+          <li>
             <strong>Delegation:</strong> When delegating a task, consider the team member's current capacity and skills. The app will show you each member's current workload to help you make informed decisions.
           </li>
           <li>
@@ -619,6 +709,7 @@ export default function LarridinApp() {
     { id: 'calendar', label: 'Calendar', icon: <FileText className="w-5 h-5" />, render: renderCalendar },
     { id: 'analytics', label: 'Analytics', icon: <PieChart className="w-5 h-5" />, render: renderAnalytics },
     { id: 'team', label: 'Team', icon: <Users className="w-5 h-5" />, render: renderTeam },
+    { id: 'integrations', label: 'Integrations', icon: <Link className="w-5 h-5" />, render: renderIntegrations },
     { id: 'guide', label: 'Guide', icon: <FileText className="w-5 h-5" />, render: renderGuide },
   ]
 

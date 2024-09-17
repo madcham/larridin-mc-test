@@ -53,7 +53,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
     return (
       <Card className="bg-gray-800 text-white">
         <CardContent className="p-6">
-          <h3 className="text-2xl font-semibold mb-4">Team Management</h3>
+          <h3 className="text-2xl font-semibold mb-4 text-purple-300">Team Management</h3>
           <p className="text-gray-400">No team members data available.</p>
         </CardContent>
       </Card>
@@ -64,7 +64,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {teamMembers.map(member => (
-          <Card key={member.id} className="bg-gray-800 text-white">
+          <Card key={member.id} className="bg-gray-800 text-white border border-purple-500">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4 mb-4">
                 <Avatar className="w-16 h-16">
@@ -72,7 +72,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
                   <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="text-xl font-semibold">{member.name}</h3>
+                  <h3 className="text-xl font-semibold text-purple-300">{member.name}</h3>
                   <p className="text-gray-400">{member.role}</p>
                 </div>
               </div>
@@ -81,13 +81,13 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
                   <span className="text-sm font-medium text-gray-400">Capacity</span>
                   <span className="text-sm font-medium text-gray-400">{member.capacity}%</span>
                 </div>
-                <Progress value={member.capacity} className="w-full" />
+                <Progress value={member.capacity} className="w-full bg-gray-700" indicatorClassName="bg-purple-500" />
               </div>
               <div className="mb-4">
-                <h4 className="text-lg font-semibold mb-2">Skills</h4>
+                <h4 className="text-lg font-semibold mb-2 text-purple-300">Skills</h4>
                 <div className="flex flex-wrap gap-2">
                   {member.skills.map(skill => (
-                    <Badge key={skill.name} variant="secondary">
+                    <Badge key={skill.name} variant="secondary" className="bg-purple-700 text-purple-100">
                       {skill.name} (Level {skill.level})
                     </Badge>
                   ))}
@@ -101,9 +101,9 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
               </button>
               {expandedMember === member.id && (
                 <div className="mt-4">
-                  <h4 className="text-lg font-semibold mb-2">Bio</h4>
+                  <h4 className="text-lg font-semibold mb-2 text-purple-300">Bio</h4>
                   <p className="text-gray-400">{member.bio}</p>
-                  <h4 className="text-lg font-semibold mt-4 mb-2">Contact</h4>
+                  <h4 className="text-lg font-semibold mt-4 mb-2 text-purple-300">Contact</h4>
                   <p className="text-gray-400">{member.email}</p>
                 </div>
               )}
@@ -111,9 +111,9 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
           </Card>
         ))}
       </div>
-      <Card className="bg-gray-800 text-white">
+      <Card className="bg-gray-800 text-white border border-purple-500">
         <CardContent className="p-6">
-          <h3 className="text-2xl font-semibold mb-4">Team Skill Gap Analysis</h3>
+          <h3 className="text-2xl font-semibold mb-4 text-purple-300">Team Skill Gap Analysis</h3>
           <p className="text-gray-400 mb-4">
             This analysis shows the average skill level across the team for each skill. 
             It helps identify areas where the team excels and potential gaps that may need addressing.
@@ -127,7 +127,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
                     {skill.averageLevel.toFixed(1)}
                   </span>
                 </div>
-                <Progress value={skill.averageLevel * 20} className="w-full" />
+                <Progress value={skill.averageLevel * 20} className="w-full bg-gray-700" indicatorClassName="bg-purple-500" />
               </div>
             ))}
           </div>
