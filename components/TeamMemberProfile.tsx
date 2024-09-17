@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import Avatar from './Avatar'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface Skill {
   name: string
@@ -40,12 +40,10 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ member }) => {
     <Card className="mb-6">
       <CardHeader>
         <CardTitle className="flex items-center gap-4">
-          <Avatar 
-            src={avatar} 
-            alt={name} 
-            fallback={name.split(' ').map(n => n[0]).join('')}
-            className="w-12 h-12"
-          />
+          <Avatar className="w-12 h-12">
+            <AvatarImage src={avatar} alt={name} />
+            <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+          </Avatar>
           <div>
             <h3 className="text-xl font-bold">{name}</h3>
             <p className="text-sm text-gray-400">{role}</p>
