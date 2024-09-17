@@ -308,7 +308,7 @@ export default function LarridinApp() {
 
   const handleImportTasks = () => {
     // Simulate task import
-    const newTasks = integrationSystems.flatMap(system =>
+    const newTasks: Task[] = integrationSystems.flatMap(system =>
       system.isAuthenticated && system.rules.length > 0
         ? [
             {
@@ -323,12 +323,12 @@ export default function LarridinApp() {
               assignedTo: null,
               completed: false,
               aiSuggestions: [`Review this task imported from ${system.name}`],
-              difficulty: 'medium'
+              difficulty: 'medium' as const
             }
           ]
         : []
     )
-
+  
     setTasks(prevTasks => [...prevTasks, ...newTasks])
     alert(`Successfully imported ${newTasks.length} tasks!`)
   }
