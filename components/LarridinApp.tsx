@@ -729,7 +729,7 @@ export default function LarridinApp() {
 
   return (
     <div className="container mx-auto p-4">
-      <Tabs defaultValue="dashboard" className="space-y-4">
+      <tabs defaultValue="dashboard" className="space-y-4">
         <TabsList>
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="tasks">Tasks</TabsTrigger>
