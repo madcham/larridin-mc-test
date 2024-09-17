@@ -81,7 +81,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
                   <span className="text-sm font-medium text-gray-400">Capacity</span>
                   <span className="text-sm font-medium text-gray-400">{member.capacity}%</span>
                 </div>
-                <Progress value={member.capacity} className="w-full bg-gray-700" indicatorClassName="bg-purple-500" />
+                <Progress value={member.capacity} className="w-full bg-gray-700" />
               </div>
               <div className="mb-4">
                 <h4 className="text-lg font-semibold mb-2 text-purple-300">Skills</h4>
@@ -127,7 +127,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({ teamMembers = [] }) => 
                     {skill.averageLevel.toFixed(1)}
                   </span>
                 </div>
-                <Progress value={skill.averageLevel * 20} className="w-full bg-gray-700" indicatorClassName="bg-purple-500" />
+                <Progress value={skill.averageLevel * 20} className="w-full bg-gray-700" />
               </div>
             ))}
           </div>
