@@ -24,6 +24,7 @@ interface Task {
   assignedTo: string | null
   completed: boolean
   aiSuggestions: string[]
+  difficulty: 'easy' | 'medium' | 'hard'
 }
 
 interface TeamMember {
@@ -45,6 +46,14 @@ interface IntegrationSystem {
   rules: string[]
 }
 
+const motivationalQuotes = [
+  "The only way to do great work is to love what you do. - Steve Jobs",
+  "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
+  "Believe you can and you're halfway there. - Theodore Roosevelt",
+  "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+  "Don't watch the clock; do what it does. Keep going. - Sam Levenson"
+]
+
 export default function LarridinApp() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -58,6 +67,7 @@ export default function LarridinApp() {
     teamCapacity: false,
     delegationEffectiveness: false,
   })
+  const [motivationalQuote, setMotivationalQuote] = useState(motivationalQuotes[0])
 
   const [tasks, setTasks] = useState<Task[]>([
     { 
@@ -75,7 +85,8 @@ export default function LarridinApp() {
         'Review and update opportunity stages in Salesforce',
         'Generate a quick sales forecast report',
         'Schedule a team review of the updated pipeline'
-      ]
+      ],
+      difficulty: 'easy'
     },
     { 
       id: '2', 
@@ -92,7 +103,8 @@ export default function LarridinApp() {
         'Prepare a personalized follow-up email',
         'Review leads recent interactions with our website',
         'Schedule a discovery call if appropriate'
-      ]
+      ],
+      difficulty: 'medium'
     },
     { 
       id: '3', 
@@ -105,7 +117,8 @@ export default function LarridinApp() {
       linkedToGoals: false, 
       assignedTo: null, 
       completed: true,
-      aiSuggestions: []
+      aiSuggestions: [],
+      difficulty: 'easy'
     },
     { 
       id: '4', 
@@ -122,7 +135,8 @@ export default function LarridinApp() {
         'Gather data from all departments',
         'Analyze key performance indicators',
         'Create visually appealing charts and graphs'
-      ]
+      ],
+      difficulty: 'hard'
     },
     { 
       id: '5', 
@@ -135,7 +149,8 @@ export default function LarridinApp() {
       linkedToGoals: true, 
       assignedTo: '4', 
       completed: true,
-      aiSuggestions: []
+      aiSuggestions: [],
+      difficulty: 'medium'
     },
   ])
 
@@ -209,6 +224,8 @@ export default function LarridinApp() {
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId)
     setSelectedTask(null)
+    // Change motivational quote when switching tabs
+    setMotivationalQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)])
   }
 
   const handleSidebarToggle = () => {
@@ -305,7 +322,8 @@ export default function LarridinApp() {
               linkedToGoals: false,
               assignedTo: null,
               completed: false,
-              aiSuggestions: [`Review this task imported from ${system.name}`]
+              aiSuggestions: [`Review this task imported from ${system.name}`],
+              difficulty: 'medium'
             }
           ]
         : []
@@ -315,13 +333,36 @@ export default function LarridinApp() {
     alert(`Successfully imported ${newTasks.length} tasks!`)
   }
 
+  const getDifficultyEmoji = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy': return '🟢'
+      case 'medium': return '🟡'
+      case 'hard': return '🔴'
+      default: return ''
+    }
+  }
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'Low': return 'from-green-500 to-green-600'
+      case 'Medium': return 'from-yellow-500 to-yellow-600'
+      case 'High': return 'from-red-500 to-red-600'
+      default: return 'from-gray-500 to-gray-600'
+    }
+  }
+
   const renderTaskList = (showDelegateButton: boolean = false) => (
     <div className="space-y-4">
       {filterAndSortTasks(tasks).map(task => (
-        <div key={task.id} className="bg-gray-800 rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:scale-102">
-          <h3 className="text-lg font-bold text-purple-300 mb-2">{task.title}</h3>
+        <div 
+          key={task.id} 
+          className={`bg-gradient-to-r ${getPriorityColor(task.priority)} rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:scale-102 transform hover:-translate-y-1`}
+        >
+          <h3 className="text-lg font-bold text-white mb-2">
+            {task.title} {getDifficultyEmoji(task.difficulty)}
+          </h3>
           <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
-            <span className={`px-2 py-1 rounded-full text-sm ${task.priority === 'Low' ? 'bg-yellow-800 text-yellow-200' : task.priority === 'Medium' ? 'bg-orange-800 text-orange-200' : 'bg-red-800 text-red-200'}`}>
+            <span className={`px-2 py-1 rounded-full text-sm bg-opacity-75 bg-white text-gray-800`}>
               Priority: {task.priority}
             </span>
             <span className="bg-green-800 text-green-200 px-2 py-1 rounded-full text-sm">Deadline: {task.deadline}</span>
@@ -483,6 +524,10 @@ export default function LarridinApp() {
           AI Assistant
         </h3>
         <p className="text-lg">I've analyzed your workload across all platforms. Here's your optimized task list for today:</p>
+      </div>
+      <div className="bg-gray-800 text-white shadow-lg rounded-lg p-4">
+        <h3 className="text-xl font-bold text-purple-300 mb-2">Motivational Quote</h3>
+        <p className="text-lg italic">{motivationalQuote}</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
