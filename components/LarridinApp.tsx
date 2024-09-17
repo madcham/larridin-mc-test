@@ -640,17 +640,29 @@ export default function LarridinApp() {
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <Switch
+                        id={`${system.id}-recent`}
                         checked={system.rules.includes('recent')}
                         onCheckedChange={() => handleToggleRule(system.id, 'recent')}
                       />
-                      <label>All items from past 24 hours</label>
+                      <label
+                        htmlFor={`${system.id}-recent`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        All items from past 24 hours
+                      </label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
+                        id={`${system.id}-highPriority`}
                         checked={system.rules.includes('highPriority')}
                         onCheckedChange={() => handleToggleRule(system.id, 'highPriority')}
                       />
-                      <label>High priority items from past 48 hours</label>
+                      <label
+                        htmlFor={`${system.id}-highPriority`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        High priority items from past 48 hours
+                      </label>
                     </div>
                   </div>
                 </div>
