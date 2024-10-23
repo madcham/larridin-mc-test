@@ -76,3 +76,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Force light theme */
+:root {
+  color-scheme: light;
+}
+
+/* Remove this if you want to allow dark mode */
+.dark {
+  color-scheme: light;
+}
