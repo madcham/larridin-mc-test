@@ -58,7 +58,11 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ member }) => {
         </div>
         <div className="mb-4">
           <h4 className="font-semibold mb-2 text-gray-700">Capacity:</h4>
-          <Progress value={capacity} className="w-full bg-gray-200" indicatorColor="bg-blue-600" />
+          <Progress 
+            value={capacity} 
+            className="w-full bg-gray-200" 
+            style={{ '--progress-color': 'hsl(var(--primary))' } as React.CSSProperties}
+          />
           <p className="text-sm text-right mt-1 text-gray-600">{capacity}%</p>
         </div>
         <div>
