@@ -505,20 +505,8 @@ export default function LarridinApp() {
 
   const renderDashboard = () => (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-gray-800">Welcome back, Alex! 👋</h2>
-      {/* <div className="bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg rounded-lg p-4">
-        <h3 className="flex items-center gap-2 text-2xl font-bold mb-2">
-          <MessageSquare className="w-6 h-6" />
-          AI Assistant
-        </h3>
-        <p className="text-lg">I've analyzed your workload across all platforms. Here's your optimized task list for today:</p>
-      </div>
-      */} 
+      <h2 className="text-3xl font-bold text-gray-800">Welcome back, Mr. Jordan Love! 👋</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          {renderTeamCapacity()}
-          {renderDelegationEffectiveness()}
-        </div>
         <div>
           <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
             Today's Tasks
@@ -536,6 +524,10 @@ export default function LarridinApp() {
             </TooltipProvider>
           </h3>
           {renderTaskList()}
+        </div>
+        <div>
+          {renderTeamCapacity()}
+          {renderDelegationEffectiveness()}
         </div>
       </div>
     </div>
