@@ -89,7 +89,13 @@ const SkillGapAnalysis: React.FC<SkillGapAnalysisProps> = ({ teamMembers }) => {
                 <span className="text-gray-700">{skill.name}</span>
                 <span className="text-gray-600">{skill.level.toFixed(1)}/5</span>
               </div>
-              <Progress value={skill.level * 20} className="w-full bg-gray-200" indicatorColor="bg-blue-600" />
+              <Progress 
+                value={skill.level * 20} 
+                className="w-full bg-gray-200" 
+                style={{ 
+                  '--progress-background': '#2563eb'
+                } as React.CSSProperties}
+              />
             </div>
           ))}
         </div>
